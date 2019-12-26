@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">TaskManager</string>
+    <string name="task_title_hint">Enter a title for the task...</string>
+    <string name="task_title_label">Title</string>
+    <string name="task_details_label">Details</string>
+    <string name="task_solved_label">Solved</string>
+    <string name="first_task_button">First</string>
+    <string name="last_task_button">Last</string>
+    <string name="date_picker_title">Date of task:</string>
+    <string name="time_picker_title">Time of task:</string>
+
+    <string-array name="times">
+        <item>Early morning</item>
+        <item>Late morning</item>
+        <item>Early afternoon</item>
+        <item>Late afternoon</item>
+        <item>Pick a time...</item>
+    </string-array>
+
+    <string name="new_task">New task</string>
+    <string name="show_subtitle">Show subtitle</string>
+    <string name="hide_subtitle">Hide subtitle</string>
+    <string name="delete_task">Delete task</string>
+    
+    <plurals name="subtitle_plural">
+        <item quantity="one">%1$d task</item>
+        <item quantity="other">%1$d tasks</item>
+    </plurals>
+
+    <string name="task_user_text">Choose user...</string>
+    <string name="task_user_chosen_text">User is %s</string>
+    <string name="task_report_text">Send user report</string>
+
+    <string name="task_report">%1$s!
+        The task was discovered on %2$s. %3$s, and %4$s
+    </string>
+    <string name="task_report_solved">The case is solved</string>
+    <string name="task_report_unsolved">The case is not solved</string>
+    <string name="task_report_no_user">there is no user.</string>
+    <string name="task_report_user">the user is %s.</string>
+    <string name="task_report_subject">TaskManager Task Report</string>
+    <string name="send_report">Send task report via</string>
+</resources>

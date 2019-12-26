@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/task_title_label"
+        style="@android:style/Widget.DeviceDefault.Light.TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/task_title_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/task_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/task_title_hint"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/task_title_label" />
+
+    <TextView
+        android:id="@+id/task_details_label"
+        style="@android:style/Widget.DeviceDefault.Light.TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/task_details_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/task_title" />
+
+    <Button
+        android:id="@+id/task_date_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/task_date_time"
+        app:layout_constraintTop_toBottomOf="@id/task_details_label" />
+
+    <Spinner
+        android:id="@+id/task_date_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/task_date_date"
+        app:layout_constraintLeft_toRightOf="@id/task_date_date"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/task_details_label" />
+
+    <CheckBox
+        android:id="@+id/task_solved"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/task_solved_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/task_date_date" />
+
+    <Button
+        android:id="@+id/task_user"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/small_margin"
+        android:layout_marginRight="@dimen/small_margin"
+        android:background="#FAFAFA"
+        android:gravity="left|center_vertical"
+        android:text="@string/task_user_text"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/task_user_delete"
+        app:layout_constraintTop_toBottomOf="@id/task_solved" />
+
+    <ImageButton
+        android:id="@+id/task_user_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/default_margin"
+        android:layout_marginRight="@dimen/small_margin"
+        android:background="#FAFAFA"
+        android:padding="4dp"
+        android:src="@drawable/ic_clear_holo_light"
+        app:layout_constraintBottom_toBottomOf="@id/task_user"
+        app:layout_constraintLeft_toRightOf="@id/task_user"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/task_solved" />
+
+    <Button
+        android:id="@+id/task_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/task_report_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/task_user" />
+
+</android.support.constraint.ConstraintLayout>

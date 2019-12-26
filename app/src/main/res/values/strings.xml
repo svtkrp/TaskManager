@@ -29,6 +29,10 @@
 
     <string name="task_user_text">Choose user...</string>
     <string name="task_user_chosen_text">User is %s</string>
+
+    <string name="create_new_user_text">Create new user...</string>
+    <string name="new_user_name_hint">New user name...</string>
+
     <string name="task_report_text">Send user report</string>
 
     <string name="task_report">%1$s!

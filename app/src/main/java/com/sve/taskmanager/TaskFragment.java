@@ -29,8 +29,10 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static android.widget.CompoundButton.*;
@@ -40,11 +42,11 @@ public class TaskFragment extends Fragment {
     private static final String ARG_TASK_ID = "task_id";
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
+    private static final String DIALOG_USER = "DialogUser";
 
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 1;
-
-    private static final int REQUEST_CONTACT = 2;
+    private static final int REQUEST_USER = 2;
 
     private static final int[] HOURS = {8, 12, 15, 17};
 
@@ -62,6 +64,13 @@ public class TaskFragment extends Fragment {
     private Button mUserButton;
     private ImageButton mDeleteUserButton;
     private Button mReportButton;
+
+    private Spinner mUserSpinner;
+    private AdapterWithCustomItem mUserAdapter;
+    private UserLab mUserLab;
+    private List<User> mUsers;
+    private String[] mUserNames;
+    private boolean mUserItemWasClicked = false;
 
     public static TaskFragment newInstance(UUID taskId) {
         Bundle args = new Bundle();
@@ -160,38 +169,79 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        final Intent pickContact = new Intent(Intent.ACTION_PICK,
-                ContactsContract.Contacts.CONTENT_URI);
-        mUserButton = view.findViewById(R.id.task_user);
-        mUserButton.setOnClickListener(new View.OnClickListener() {
+
+
+
+        mUserLab = UserLab.get(getActivity());
+        mUsers = mUserLab.getUsers();
+        mUserNames = new String[mUsers.size() + 1];
+        for (int i = 0; i < mUsers.size(); i++) {
+            mUserNames[i] = mUsers.get(i).getName();
+        }
+        mUserNames[mUserNames.length - 1] = getResources().getString(R.string.create_new_user_text);
+
+        mUserAdapter = new AdapterWithCustomItem(getActivity(), mUserNames);
+        mUserSpinner = view.findViewById(R.id.task_user2);
+        mUserSpinner.setAdapter(mUserAdapter);
+
+        if (mTask.getUser() == null) {
+            mUserAdapter.setCustomText(getString(R.string.task_user_text));
+        } else {
+            mUserAdapter.setCustomText(mUserLab.getUser(UUID.fromString(mTask.getUser())).getName());
+        }
+
+        mUserSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                startActivityForResult(pickContact, REQUEST_CONTACT);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (mUserItemWasClicked) {
+                    if (position == mUserNames.length-1) {
+                        FragmentManager fragmentManager = getFragmentManager();
+                        UserCreaterFragment dialog = UserCreaterFragment.newInstance();
+                        dialog.setTargetFragment(TaskFragment.this, REQUEST_USER);
+                        dialog.show(fragmentManager, DIALOG_USER);
+                    } else {
+                        mTask.setUser(mUsers.get(position).getId().toString());
+                        mUserAdapter.setCustomText(mUserLab.getUser(UUID.fromString(mTask.getUser())).getName());
+                    }
+
+                    if (mTask.getUser() != null) {
+                        mDeleteUserButton.setVisibility(VISIBLE);
+                    } else {
+                        mDeleteUserButton.setVisibility(GONE);
+                    }
+
+                } else {
+                    mUserItemWasClicked = true;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+
+
 
         mDeleteUserButton = view.findViewById(R.id.task_user_delete);
         mDeleteUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mTask.setUser(null);
-                mUserButton.setText(R.string.task_user_text);
+                mUserAdapter.setCustomText(getString(R.string.task_user_text));
                 mDeleteUserButton.setVisibility(GONE);
             }
         });
 
         if (mTask.getUser() != null) {
-            mUserButton.setText(getString(R.string.task_user_chosen_text,
-                    mTask.getUser()));
+            mDeleteUserButton.setVisibility(VISIBLE);
         } else {
             mDeleteUserButton.setVisibility(GONE);
         }
 
-        PackageManager packageManager = getActivity().getPackageManager();
-        if (packageManager.resolveActivity(pickContact,
-                PackageManager.MATCH_DEFAULT_ONLY) == null) {
-            mUserButton.setEnabled(false);
-        }
+
+
 
         mReportButton = view.findViewById(R.id.task_report);
         mReportButton.setOnClickListener(new View.OnClickListener() {
@@ -224,25 +274,27 @@ public class TaskFragment extends Fragment {
             mTask.setDate(date);
             updateDate();
 
-        } else if (requestCode == REQUEST_CONTACT && data != null) {
-            Uri contactUri = data.getData();
+        } else if (requestCode == REQUEST_USER) {
+            String name = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_NAME);
+            if (name != null) {
+                User user = new User();
+                user.setName(name);
+                mUserLab.addUser(user);
+                mTask.setUser(user.getId().toString());
 
-            String[] queryFields = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
-            Cursor cursor = getActivity().getContentResolver().query(contactUri, queryFields,
-                    null, null, null);
-
-            try {
-                if (cursor.getCount() == 0) {
-                    return;
+                mUsers = mUserLab.getUsers();
+                mUserNames = new String[mUsers.size() + 1];
+                for (int i = 0; i < mUsers.size(); i++) {
+                    mUserNames[i] = mUsers.get(i).getName();
                 }
-                cursor.moveToFirst();
-                String user = cursor.getString(0);
-                mTask.setUser(user);
-                mUserButton.setText(getString(R.string.task_user_chosen_text, user));
-                mDeleteUserButton.setVisibility(VISIBLE);
-            } finally {
-                cursor.close();
+                mUserNames[mUserNames.length - 1] = getResources().getString(R.string.create_new_user_text);
+                mUserAdapter = new AdapterWithCustomItem(getActivity(), mUserNames);
+                mUserSpinner.setAdapter(mUserAdapter);
+                mTask.setUser(user.getId().toString());
+
+                mUserAdapter.setCustomText(mUserLab.getUser(UUID.fromString(mTask.getUser())).getName());
             }
+
         }
     }
 

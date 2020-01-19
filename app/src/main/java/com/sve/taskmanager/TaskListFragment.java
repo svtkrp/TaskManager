@@ -89,8 +89,7 @@ public class TaskListFragment extends Fragment {
     }
 
     private void updateSubtitle() {
-        TaskLab taskLab = TaskLab.get(getActivity());
-        int taskCount = taskLab.getTasks().size();
+        int taskCount = TaskLab.get(getActivity()).getTaskCount();
         String subtitle = getResources().getQuantityString
                 (R.plurals.subtitle_plural, taskCount, taskCount);
 

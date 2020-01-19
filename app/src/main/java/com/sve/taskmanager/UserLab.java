@@ -32,6 +32,11 @@ public class UserLab {
         mDatabase = new UserBaseHelper(mContext).getWritableDatabase();
     }
 
+    public int getUserCount() {
+        UserCursorWrapper cursor = queryUsers(null, null);
+        return cursor.getCount();
+    }
+
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
 

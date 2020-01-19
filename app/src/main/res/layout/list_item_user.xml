@@ -21,14 +21,27 @@
         android:id="@+id/user_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginLeft="@dimen/default_margin"
+        android:layout_marginRight="@dimen/default_margin"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toRightOf="@id/user_image_view"
         app:layout_constraintRight_toLeftOf="@+id/delete_user"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/user_task_count"
         tools:text="User Name" />
+
+    <TextView
+        android:id="@+id/user_task_count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        app:layout_constraintLeft_toRightOf="@id/user_image_view"
+        app:layout_constraintRight_toLeftOf="@+id/delete_user"
+        app:layout_constraintTop_toBottomOf="@id/user_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="User's Task Count" />
 
     <ImageButton
         android:id="@+id/delete_user"

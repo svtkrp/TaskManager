@@ -99,8 +99,7 @@ public class UserListFragment extends Fragment {
     }
 
     private void updateSubtitle() {
-        UserLab userLab = UserLab.get(getActivity());
-        int userCount = userLab.getUsers().size();
+        int userCount = UserLab.get(getActivity()).getUserCount();
         String subtitle = getResources().getQuantityString
                 (R.plurals.subtitle_plural_users, userCount, userCount);
 
@@ -150,6 +149,7 @@ public class UserListFragment extends Fragment {
 
         private User mUser;
         private TextView mNameTextView;
+        private TextView mTaskCountTextView;
         private ImageButton mDeleteUserButton;
 
         public UserHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -158,7 +158,7 @@ public class UserListFragment extends Fragment {
             itemView.setOnClickListener(this);
 
             mNameTextView = itemView.findViewById(R.id.user_name);
-
+            mTaskCountTextView = itemView.findViewById(R.id.user_task_count);
             mDeleteUserButton = itemView.findViewById(R.id.delete_user);
             mDeleteUserButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -171,6 +171,10 @@ public class UserListFragment extends Fragment {
         public void bind(User user) {
             mUser = user;
             mNameTextView.setText(mUser.getName());
+            int taskCount = TaskLab.get(getActivity()).getTaskCountOfUser(mUser);
+            String taskCountText = getResources().getQuantityString
+                    (R.plurals.subtitle_plural, taskCount, taskCount);
+            mTaskCountTextView.setText(taskCountText);
         }
 
         @Override

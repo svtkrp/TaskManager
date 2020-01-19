@@ -31,6 +31,11 @@ public class TaskLab {
         mDatabase = new TaskBaseHelper(mContext).getWritableDatabase();
     }
 
+    public int getTaskCount() {
+        TaskCursorWrapper cursor = queryTasks(null, null);
+        return cursor.getCount();
+    }
+
     public List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>();
 
@@ -117,6 +122,17 @@ public class TaskLab {
         } finally {
             cursor.close();
         }
+    }
+
+    public int getTaskCountOfUser(User user) {
+        String userId = user.getId().toString();
+
+        TaskCursorWrapper cursor = queryTasks(
+                TaskTable.Cols.USER + " = ?",
+                new String[] {userId}
+        );
+
+        return cursor.getCount();
     }
 
     public List<Task> getTasksOfUser(User user) {

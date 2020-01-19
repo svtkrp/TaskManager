@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,7 +48,11 @@ public class TaskFragment extends Fragment {
 
     private Task mTask;
     private EditText mTitleField;
-    private Button mDateButton;
+
+    private Spinner mDateSpinner;
+    private AdapterWithCustomItem mDateAdapter;
+    private List<Date> mSomeDates;
+    private String[] mSomeDateNames;
 
     private Spinner mTimeSpinner;
     private AdapterWithCustomItem mTimeAdapter;
@@ -55,15 +60,15 @@ public class TaskFragment extends Fragment {
 
     private CheckBox mSolvedCheckBox;
 
-    private ImageButton mDeleteUserButton;
-    private Button mReportButton;
-
     private Spinner mUserSpinner;
     private AdapterWithCustomItem mUserAdapter;
     private UserLab mUserLab;
     private List<User> mUsers;
     private String[] mUserNames;
     private boolean mUserItemWasClicked = false;
+
+    private ImageButton mDeleteUserButton;
+    private Button mReportButton;
 
     public static TaskFragment newInstance(UUID taskId) {
         Bundle args = new Bundle();
@@ -111,23 +116,30 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        mDateButton = view.findViewById(R.id.task_date_date);
-        mDateButton.setText(DateFormat.format("EEEE, MMM d, yyyy", mTask.getDate()));
+        mDateSpinner = view.findViewById(R.id.task_date_date);
+        initDateView();
 
-        mTimes = getResources().getStringArray(R.array.times);
-        MINUTES[0] = convertHoursAndMinutesOfDateToMinutes(mTask.getDate());
-        mTimeAdapter = new AdapterWithCustomItem(getActivity(), mTimes);
         mTimeSpinner = view.findViewById(R.id.task_date_time);
-        mTimeSpinner.setAdapter(mTimeAdapter);
-        mTimeAdapter.setCustomText((String)DateFormat.format("HH:mm", mTask.getDate()));
+        initTimeView();
 
-        mDateButton.setOnClickListener(new View.OnClickListener() {
+        mDateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getFragmentManager();
-                DatePickerFragment dialog = DatePickerFragment.newInstance(mTask.getDate());
-                dialog.setTargetFragment(TaskFragment.this, REQUEST_DATE);
-                dialog.show(fragmentManager, DIALOG_DATE);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    // nothing happens
+                } else if (position == mSomeDateNames.length - 1) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    DatePickerFragment dialog = DatePickerFragment.newInstance(mTask.getDate());
+                    dialog.setTargetFragment(TaskFragment.this, REQUEST_DATE);
+                    dialog.show(fragmentManager, DIALOG_DATE);
+                } else {
+                    mTask.setDate(mergeFirstDateSecondTime(mSomeDates.get(position), mTask.getDate()));
+                    updateDateView();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
@@ -144,7 +156,7 @@ public class TaskFragment extends Fragment {
                 } else {
                     mTask.setDate(changeTimeNotDate(mTask.getDate(), MINUTES[position] / 60,
                             MINUTES[position] % 60));
-                    updateDateViews();
+                    updateTimeView();
                 }
             }
 
@@ -230,12 +242,12 @@ public class TaskFragment extends Fragment {
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mTask.setDate(date);
-            updateDateViews();
+            updateDateView();
 
         } else if (requestCode == REQUEST_TIME) {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_DATE);
             mTask.setDate(date);
-            updateDateViews();
+            updateTimeView();
 
         } else if (requestCode == REQUEST_USER) {
             String name = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_NAME);
@@ -268,12 +280,76 @@ public class TaskFragment extends Fragment {
         }
     }
 
-    private void updateDateViews() {
-        mDateButton.setText(DateFormat.format("EEEE, MMM d, yyyy", mTask.getDate()));
+    private void initDateView() {
+        Date estDate = mTask.getDate();
+        Date today = new Date();
+        Date tomorrow = changeDateNotTimeBy(today, 1, 0, 0);
+        Date weekLater = changeDateNotTimeBy(today, 7, 0, 0);
+        Date monthLater = changeDateNotTimeBy(today, 0, 1, 0);
+        mSomeDates = new ArrayList<>(5);
+        mSomeDates.add(estDate);
+        mSomeDates.add(today);
+        mSomeDates.add(tomorrow);
+        mSomeDates.add(weekLater);
+        mSomeDates.add(monthLater);
+        mSomeDateNames = getResources().getStringArray(R.array.dates);
 
+        mDateAdapter = new AdapterWithCustomItem(getActivity(), mSomeDateNames);
+        // spinner's find by id (in onCreateView now)
+        mDateSpinner.setAdapter(mDateAdapter);
+        mDateAdapter.setCustomText((String)DateFormat.format("EEEE, MMM d, yyyy", mTask.getDate()));
+    }
+
+    private void initTimeView() {
+        mTimes = getResources().getStringArray(R.array.times);
+        MINUTES[0] = convertHoursAndMinutesOfDateToMinutes(mTask.getDate());
+
+        mTimeAdapter = new AdapterWithCustomItem(getActivity(), mTimes);
+        // spinner's find by id (in onCreateView now)
+        mTimeSpinner.setAdapter(mTimeAdapter);
+        mTimeAdapter.setCustomText((String)DateFormat.format("HH:mm", mTask.getDate()));
+    }
+
+    private void updateDateView() {
+        mSomeDates.set(0, mTask.getDate());
+        mDateSpinner.setSelection(0);
+        mDateAdapter.setCustomText((String)DateFormat.format("EEEE, MMM d, yyyy", mTask.getDate()));
+    }
+
+    private void updateTimeView() {
         MINUTES[0] = convertHoursAndMinutesOfDateToMinutes(mTask.getDate());
         mTimeSpinner.setSelection(0);
         mTimeAdapter.setCustomText((String)DateFormat.format("HH:mm", mTask.getDate()));
+    }
+
+    private Date changeDateNotTime(Date date, int day, int month, int year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
+        return calendar.getTime();
+    }
+
+    private Date changeDateNotTimeBy(Date date, int days, int months, int years) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, days);
+        calendar.add(Calendar.MONTH, months);
+        calendar.add(Calendar.YEAR, years);
+        return calendar.getTime();
+    }
+
+    private Date mergeFirstDateSecondTime(Date firstDate, Date secondTime) {
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(firstDate);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(secondTime);
+        int hour = calendar2.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar2.get(Calendar.MINUTE);
+        calendar1.set(Calendar.HOUR_OF_DAY, hour);
+        calendar1.set(Calendar.MINUTE, minute);
+        return calendar1.getTime();
     }
 
     private Date changeTimeNotDate(Date date, int hour, int minute) {

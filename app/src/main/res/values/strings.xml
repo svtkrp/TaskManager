@@ -9,6 +9,15 @@
     <string name="date_picker_title">Date of task:</string>
     <string name="time_picker_title">Time of task:</string>
 
+    <string-array name="dates">
+        <item>Established date</item>
+        <item>Today</item>
+        <item>Tomorrow</item>
+        <item>A week later</item>
+        <item>A month later</item>
+        <item>Pick a date...</item>
+    </string-array>
+
     <string-array name="times">
         <item>Established time</item>
         <item>Early morning</item>

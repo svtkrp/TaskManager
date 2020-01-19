@@ -30,7 +30,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/task_title" />
 
-    <Button
+    <Spinner
         android:id="@+id/task_date_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -40,10 +40,9 @@
 
     <Spinner
         android:id="@+id/task_date_time"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/task_date_date"
-        app:layout_constraintLeft_toRightOf="@id/task_date_date"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/task_details_label" />
 

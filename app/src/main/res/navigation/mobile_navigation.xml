@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_tasks">
+
+    <fragment
+        android:id="@+id/nav_tasks"
+        android:name="com.sve.taskmanager.TaskListFragment"
+        android:label="@string/menu_tasks"
+        tools:layout="@layout/fragment_task_list" />
+
+    <fragment
+        android:id="@+id/nav_users"
+        android:name="com.sve.taskmanager.UserListFragment"
+        android:label="@string/menu_users"
+        tools:layout="@layout/fragment_item_list_with_adding_new" />
+
+</navigation>

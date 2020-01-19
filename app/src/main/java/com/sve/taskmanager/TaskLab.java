@@ -90,6 +90,60 @@ public class TaskLab {
         );
     }
 
+    public void replaceUserWithNull(User user) {
+        String userId = user.getId().toString();
+        ContentValues values;
+        Task task;
+
+        TaskCursorWrapper cursor = queryTasks(
+                TaskTable.Cols.USER + " = ?",
+                new String[] {userId}
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return;
+            }
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                task = cursor.getTask();
+                values = getContentValuesUserIsNull(task);
+                mDatabase.update(TaskTable.NAME, values,
+                        TaskTable.Cols.UUID + " = ?",
+                        new String[] {task.getId().toString()}
+                );
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public List<Task> getTasksOfUser(User user) {
+        String userId = user.getId().toString();
+        List<Task> tasks = new ArrayList<>();
+
+        TaskCursorWrapper cursor = queryTasks(
+                TaskTable.Cols.USER + " = ?",
+                new String[] {userId}
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                tasks.add(cursor.getTask());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return tasks;
+    }
+
     private TaskCursorWrapper queryTasks(String whereClause, String[] whereArgs) {
         Cursor cursor = mDatabase.query(
                 TaskTable.NAME,
@@ -111,6 +165,16 @@ public class TaskLab {
         values.put(TaskTable.Cols.DATE, task.getDate().getTime());
         values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
         values.put(TaskTable.Cols.USER, task.getUser());
+        return values;
+    }
+
+    private static ContentValues getContentValuesUserIsNull(Task task) {
+        ContentValues values = new ContentValues();
+        values.put(TaskTable.Cols.UUID, task.getId().toString());
+        values.put(TaskTable.Cols.TITLE, task.getTitle());
+        values.put(TaskTable.Cols.DATE, task.getDate().getTime());
+        values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
+        values.putNull(TaskTable.Cols.USER);
         return values;
     }
 }

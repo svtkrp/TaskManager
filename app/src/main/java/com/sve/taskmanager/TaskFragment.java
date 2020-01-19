@@ -3,11 +3,7 @@ package com.sve.taskmanager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -29,7 +25,6 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -178,11 +173,14 @@ public class TaskFragment extends Fragment {
         for (int i = 0; i < mUsers.size(); i++) {
             mUserNames[i] = mUsers.get(i).getName();
         }
-        mUserNames[mUserNames.length - 1] = getResources().getString(R.string.create_new_user_text);
+        mUserNames[mUserNames.length - 1] = getResources().getString(R.string.add_new_user_text);
 
         mUserAdapter = new AdapterWithCustomItem(getActivity(), mUserNames);
         mUserSpinner = view.findViewById(R.id.task_user2);
         mUserSpinner.setAdapter(mUserAdapter);
+
+        // TODO: CHECK THIS SHIT
+        //mUserSpinner.setSelection(4);
 
         if (mTask.getUser() == null) {
             mUserAdapter.setCustomText(getString(R.string.task_user_text));
@@ -287,7 +285,7 @@ public class TaskFragment extends Fragment {
                 for (int i = 0; i < mUsers.size(); i++) {
                     mUserNames[i] = mUsers.get(i).getName();
                 }
-                mUserNames[mUserNames.length - 1] = getResources().getString(R.string.create_new_user_text);
+                mUserNames[mUserNames.length - 1] = getResources().getString(R.string.add_new_user_text);
                 mUserAdapter = new AdapterWithCustomItem(getActivity(), mUserNames);
                 mUserSpinner.setAdapter(mUserAdapter);
                 mTask.setUser(user.getId().toString());
@@ -338,13 +336,14 @@ public class TaskFragment extends Fragment {
             solvedString = getString(R.string.task_report_unsolved);
         }
 
-        String dateString = DateFormat.format("EEEE, MMM d", mTask.getDate()).toString();
+        String dateString = DateFormat.format("HH:mm, EEEE, MMM d, yyyy", mTask.getDate()).toString();
 
+        mUserLab = UserLab.get(getActivity());
         String user = mTask.getUser();
         if (user == null) {
             user = getString(R.string.task_report_no_user);
         } else {
-            user = getString(R.string.task_report_user, user);
+            user = getString(R.string.task_report_user, mUserLab.getUser(UUID.fromString(user)).getName());
         }
 
         String report = getString(R.string.task_report,

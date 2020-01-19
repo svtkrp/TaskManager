@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/delete_task"
-        android:icon="@drawable/ic_menu_delete"
-        android:title="@string/delete_task_text"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/new_user"
+        android:icon="@drawable/ic_menu_add"
+        android:title="@string/add_new_user_text"
+        app:showAsAction="ifRoom|withText" />
 
 </menu>

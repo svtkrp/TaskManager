@@ -21,12 +21,8 @@ import java.util.List;
 
 public class TaskListFragment extends Fragment {
 
-    private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
-
     private RecyclerView mTaskRecyclerView;
     private TaskAdapter mAdapter;
-
-    private boolean mSubtitleVisible;
 
     private Button mNewTaskButton;
 
@@ -41,10 +37,6 @@ public class TaskListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
         mTaskRecyclerView = view.findViewById(R.id.task_recycler_view);
         mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        if (savedInstanceState != null) {
-            mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
-        }
 
         mNewTaskButton = view.findViewById(R.id.new_task_button);
         mNewTaskButton.setOnClickListener(new View.OnClickListener() {
@@ -68,20 +60,14 @@ public class TaskListFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_task_list, menu);
-
-        MenuItem subtitleItem = menu.findItem(R.id.show_subtitle);
-        if (mSubtitleVisible) {
-            subtitleItem.setTitle(R.string.hide_subtitle);
-        } else {
-            subtitleItem.setTitle(R.string.show_subtitle);
-        }
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.getSupportActionBar().setTitle(R.string.app_name);
     }
 
     @Override
@@ -89,11 +75,6 @@ public class TaskListFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.new_task:
                 addAndOpenNewTask();
-                return true;
-            case R.id.show_subtitle:
-                mSubtitleVisible = !mSubtitleVisible;
-                getActivity().invalidateOptionsMenu();
-                updateSubtitle();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -112,10 +93,6 @@ public class TaskListFragment extends Fragment {
         int taskCount = taskLab.getTasks().size();
         String subtitle = getResources().getQuantityString
                 (R.plurals.subtitle_plural, taskCount, taskCount);
-
-        if (!mSubtitleVisible) {
-            subtitle = null;
-        }
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setSubtitle(subtitle);

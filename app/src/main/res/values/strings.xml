@@ -44,7 +44,7 @@
 
     <string name="add_new_user_button">Add new user</string>
     <string name="delete_user_text">Delete user</string>
-    <string name="new_user_name_hint">New user name...</string>
+    <string name="new_user_name_hint">Enter new user\'s name...</string>
 
     <plurals name="subtitle_plural_users">
         <item quantity="one">%1$d user</item>

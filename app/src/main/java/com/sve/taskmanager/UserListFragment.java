@@ -43,7 +43,7 @@ public class UserListFragment extends Fragment {
         mUserRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mNewUserButton = view.findViewById(R.id.new_item_button);
-        mNewUserButton.setText(R.string.add_new_user_text);
+        mNewUserButton.setText(R.string.add_new_user_button);
         mNewUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -10,6 +10,7 @@
     <string name="time_picker_title">Time of task:</string>
 
     <string-array name="times">
+        <item>Established time</item>
         <item>Early morning</item>
         <item>Late morning</item>
         <item>Early afternoon</item>
@@ -29,8 +30,10 @@
 
     <string name="task_user_text">Choose user...</string>
     <string name="task_user_chosen_text">User is %s</string>
+    <string name="add_new_user_text">Add new user...</string>
+    <string name="no_task_user_text">No user</string>
 
-    <string name="add_new_user_text">Add new user</string>
+    <string name="add_new_user_button">Add new user</string>
     <string name="delete_user_text">Delete user</string>
     <string name="new_user_name_hint">New user name...</string>
 

@@ -10,8 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".NavDrawerActivity"
-            android:label="@string/title_activity_nav_drawer">
+            android:name=".NavDrawerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

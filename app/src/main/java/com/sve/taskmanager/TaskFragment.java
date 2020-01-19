@@ -43,7 +43,7 @@ public class TaskFragment extends Fragment {
     private static final int REQUEST_TIME = 1;
     private static final int REQUEST_USER = 2;
 
-    private static final int[] HOURS = {8, 12, 15, 17};
+    private static final int[] MINUTES = {0, 8*60, 12*60, 15*60, 17*60};
 
     private Task mTask;
     private EditText mTitleField;
@@ -52,11 +52,9 @@ public class TaskFragment extends Fragment {
     private Spinner mTimeSpinner;
     private AdapterWithCustomItem mTimeAdapter;
     private String[] mTimes;
-    private boolean mTimeItemWasClicked = false;
 
     private CheckBox mSolvedCheckBox;
 
-    private Button mUserButton;
     private ImageButton mDeleteUserButton;
     private Button mReportButton;
 
@@ -114,13 +112,14 @@ public class TaskFragment extends Fragment {
         });
 
         mDateButton = view.findViewById(R.id.task_date_date);
+        mDateButton.setText(DateFormat.format("EEEE, MMM d, yyyy", mTask.getDate()));
 
         mTimes = getResources().getStringArray(R.array.times);
+        MINUTES[0] = convertHoursAndMinutesOfDateToMinutes(mTask.getDate());
         mTimeAdapter = new AdapterWithCustomItem(getActivity(), mTimes);
         mTimeSpinner = view.findViewById(R.id.task_date_time);
         mTimeSpinner.setAdapter(mTimeAdapter);
-
-        updateDate();
+        mTimeAdapter.setCustomText((String)DateFormat.format("HH:mm", mTask.getDate()));
 
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,18 +134,17 @@ public class TaskFragment extends Fragment {
         mTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (mTimeItemWasClicked) {
-                    if (position == mTimes.length-1) {
-                        FragmentManager fragmentManager = getFragmentManager();
-                        TimePickerFragment dialog = TimePickerFragment.newInstance(mTask.getDate());
-                        dialog.setTargetFragment(TaskFragment.this, REQUEST_TIME);
-                        dialog.show(fragmentManager, DIALOG_TIME);
-                    } else {
-                        mTask.setDate(changeTimeNotDate(mTask.getDate(), HOURS[position], 0));
-                        updateDate();
-                    }
+                if (position == 0) {
+                    // nothing happens
+                } else if (position == mTimes.length - 1) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    TimePickerFragment dialog = TimePickerFragment.newInstance(mTask.getDate());
+                    dialog.setTargetFragment(TaskFragment.this, REQUEST_TIME);
+                    dialog.show(fragmentManager, DIALOG_TIME);
                 } else {
-                    mTimeItemWasClicked = true;
+                    mTask.setDate(changeTimeNotDate(mTask.getDate(), MINUTES[position] / 60,
+                            MINUTES[position] % 60));
+                    updateDateViews();
                 }
             }
 
@@ -164,53 +162,34 @@ public class TaskFragment extends Fragment {
             }
         });
 
-
-
-
-        mUserLab = UserLab.get(getActivity());
-        mUsers = mUserLab.getUsers();
-        mUserNames = new String[mUsers.size() + 1];
-        for (int i = 0; i < mUsers.size(); i++) {
-            mUserNames[i] = mUsers.get(i).getName();
-        }
-        mUserNames[mUserNames.length - 1] = getResources().getString(R.string.add_new_user_text);
-
-        mUserAdapter = new AdapterWithCustomItem(getActivity(), mUserNames);
-        mUserSpinner = view.findViewById(R.id.task_user2);
-        mUserSpinner.setAdapter(mUserAdapter);
-
-        // TODO: CHECK THIS SHIT
-        //mUserSpinner.setSelection(4);
-
-        if (mTask.getUser() == null) {
-            mUserAdapter.setCustomText(getString(R.string.task_user_text));
-        } else {
-            mUserAdapter.setCustomText(mUserLab.getUser(UUID.fromString(mTask.getUser())).getName());
-        }
+        mUserSpinner = view.findViewById(R.id.task_user);
+        updateUserView();
 
         mUserSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
                 if (mUserItemWasClicked) {
-                    if (position == mUserNames.length-1) {
+                    if (position == 0) {
+                        mTask.setUser(null);
+                    } else if (position == mUserNames.length - 1) {
                         FragmentManager fragmentManager = getFragmentManager();
                         UserCreaterFragment dialog = UserCreaterFragment.newInstance();
                         dialog.setTargetFragment(TaskFragment.this, REQUEST_USER);
                         dialog.show(fragmentManager, DIALOG_USER);
                     } else {
-                        mTask.setUser(mUsers.get(position).getId().toString());
-                        mUserAdapter.setCustomText(mUserLab.getUser(UUID.fromString(mTask.getUser())).getName());
+                        mTask.setUser(mUsers.get(position - 1).getId().toString());
                     }
-
-                    if (mTask.getUser() != null) {
-                        mDeleteUserButton.setVisibility(VISIBLE);
-                    } else {
-                        mDeleteUserButton.setVisibility(GONE);
-                    }
-
                 } else {
                     mUserItemWasClicked = true;
+                }
+
+                if (mTask.getUser() != null) {
+                    mDeleteUserButton.setVisibility(VISIBLE);
+                    mUserAdapter.setCustomText(mUserLab
+                            .getUser(UUID.fromString(mTask.getUser())).getName());
+                } else {
+                    mDeleteUserButton.setVisibility(GONE);
+                    mUserAdapter.setCustomText(getString(R.string.task_user_text));
                 }
             }
 
@@ -219,27 +198,13 @@ public class TaskFragment extends Fragment {
             }
         });
 
-
-
-
         mDeleteUserButton = view.findViewById(R.id.task_user_delete);
         mDeleteUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTask.setUser(null);
-                mUserAdapter.setCustomText(getString(R.string.task_user_text));
-                mDeleteUserButton.setVisibility(GONE);
+                mUserSpinner.setSelection(0);
             }
         });
-
-        if (mTask.getUser() != null) {
-            mDeleteUserButton.setVisibility(VISIBLE);
-        } else {
-            mDeleteUserButton.setVisibility(GONE);
-        }
-
-
-
 
         mReportButton = view.findViewById(R.id.task_report);
         mReportButton.setOnClickListener(new View.OnClickListener() {
@@ -265,12 +230,12 @@ public class TaskFragment extends Fragment {
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mTask.setDate(date);
-            updateDate();
+            updateDateViews();
 
         } else if (requestCode == REQUEST_TIME) {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_DATE);
             mTask.setDate(date);
-            updateDate();
+            updateDateViews();
 
         } else if (requestCode == REQUEST_USER) {
             String name = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_NAME);
@@ -280,19 +245,8 @@ public class TaskFragment extends Fragment {
                 mUserLab.addUser(user);
                 mTask.setUser(user.getId().toString());
 
-                mUsers = mUserLab.getUsers();
-                mUserNames = new String[mUsers.size() + 1];
-                for (int i = 0; i < mUsers.size(); i++) {
-                    mUserNames[i] = mUsers.get(i).getName();
-                }
-                mUserNames[mUserNames.length - 1] = getResources().getString(R.string.add_new_user_text);
-                mUserAdapter = new AdapterWithCustomItem(getActivity(), mUserNames);
-                mUserSpinner.setAdapter(mUserAdapter);
-                mTask.setUser(user.getId().toString());
-
-                mUserAdapter.setCustomText(mUserLab.getUser(UUID.fromString(mTask.getUser())).getName());
+                updateUserView();
             }
-
         }
     }
 
@@ -314,8 +268,11 @@ public class TaskFragment extends Fragment {
         }
     }
 
-    private void updateDate() {
+    private void updateDateViews() {
         mDateButton.setText(DateFormat.format("EEEE, MMM d, yyyy", mTask.getDate()));
+
+        MINUTES[0] = convertHoursAndMinutesOfDateToMinutes(mTask.getDate());
+        mTimeSpinner.setSelection(0);
         mTimeAdapter.setCustomText((String)DateFormat.format("HH:mm", mTask.getDate()));
     }
 
@@ -325,6 +282,44 @@ public class TaskFragment extends Fragment {
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         return calendar.getTime();
+    }
+
+    private int convertHoursAndMinutesOfDateToMinutes(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.HOUR_OF_DAY)*60 + calendar.get(Calendar.MINUTE);
+    }
+
+    private void updateUserView() {
+        mUserLab = UserLab.get(getActivity());
+        mUsers = mUserLab.getUsers();
+        User user;
+        if (mTask.getUser() == null) {
+            user = null;
+        } else {
+            user = mUserLab.getUser(UUID.fromString(mTask.getUser()));
+        }
+
+        mUserNames = new String[mUsers.size() + 2];
+        for (int i = 0; i < mUsers.size(); i++) {
+            mUserNames[i + 1] = mUsers.get(i).getName();
+        }
+        mUserNames[0] = getString(R.string.no_task_user_text);
+        mUserNames[mUserNames.length - 1] = getString(R.string.add_new_user_text);
+
+        mUserAdapter = new AdapterWithCustomItem(getActivity(), mUserNames);
+        mUserSpinner.setAdapter(mUserAdapter);
+
+        if (user == null) {
+            mUserSpinner.setSelection(0);
+        } else {
+            for (int j = 0; j < mUsers.size(); j++) {
+                if (user.equals(mUsers.get(j))) {
+                    mUserSpinner.setSelection(j + 1);
+                    break;
+                }
+            }
+        }
     }
 
     private String getTaskReport() {
@@ -357,7 +352,7 @@ public class TaskFragment extends Fragment {
 
         private String mCustomText = "";
 
-        public AdapterWithCustomItem(Context context, String[] options){
+        public AdapterWithCustomItem(Context context, String[] options) {
             super(context, android.R.layout.simple_spinner_dropdown_item, options);
             mOptions = options;
         }

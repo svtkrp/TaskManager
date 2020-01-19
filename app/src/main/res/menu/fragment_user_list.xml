@@ -5,7 +5,7 @@
     <item
         android:id="@+id/new_user"
         android:icon="@drawable/ic_menu_add"
-        android:title="@string/add_new_user_text"
+        android:title="@string/add_new_user_button"
         app:showAsAction="ifRoom|withText" />
 
 </menu>

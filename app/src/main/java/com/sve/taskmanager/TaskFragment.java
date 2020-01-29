@@ -251,7 +251,7 @@ public class TaskFragment extends Fragment {
 
         } else if (requestCode == REQUEST_USER) {
             String name = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_NAME);
-            if (name != null) {
+            if ((name != null)&&(!name.equals(""))) {
                 User user = new User();
                 user.setName(name);
                 mUserLab.addUser(user);
@@ -297,7 +297,8 @@ public class TaskFragment extends Fragment {
         mDateAdapter = new AdapterWithCustomItem(getActivity(), mSomeDateNames);
         // spinner's find by id (in onCreateView now)
         mDateSpinner.setAdapter(mDateAdapter);
-        mDateAdapter.setCustomText((String)DateFormat.format("EEEE, MMM d, yyyy", mTask.getDate()));
+        mDateAdapter.setCustomText((String)DateFormat.format(getString(R.string.short_date_format),
+                mTask.getDate()));
     }
 
     private void initTimeView() {
@@ -307,19 +308,22 @@ public class TaskFragment extends Fragment {
         mTimeAdapter = new AdapterWithCustomItem(getActivity(), mTimes);
         // spinner's find by id (in onCreateView now)
         mTimeSpinner.setAdapter(mTimeAdapter);
-        mTimeAdapter.setCustomText((String)DateFormat.format("HH:mm", mTask.getDate()));
+        mTimeAdapter.setCustomText((String)DateFormat.format(getString(R.string.time_format),
+                mTask.getDate()));
     }
 
     private void updateDateView() {
         mSomeDates.set(0, mTask.getDate());
         mDateSpinner.setSelection(0);
-        mDateAdapter.setCustomText((String)DateFormat.format("EEEE, MMM d, yyyy", mTask.getDate()));
+        mDateAdapter.setCustomText((String)DateFormat.format(getString(R.string.short_date_format),
+                mTask.getDate()));
     }
 
     private void updateTimeView() {
         MINUTES[0] = convertHoursAndMinutesOfDateToMinutes(mTask.getDate());
         mTimeSpinner.setSelection(0);
-        mTimeAdapter.setCustomText((String)DateFormat.format("HH:mm", mTask.getDate()));
+        mTimeAdapter.setCustomText((String)DateFormat.format(getString(R.string.time_format),
+                mTask.getDate()));
     }
 
     private Date changeDateNotTime(Date date, int day, int month, int year) {
@@ -407,14 +411,16 @@ public class TaskFragment extends Fragment {
             solvedString = getString(R.string.task_report_unsolved);
         }
 
-        String dateString = DateFormat.format("HH:mm, EEEE, MMM d, yyyy", mTask.getDate()).toString();
+        String dateString = DateFormat.format(getString(R.string.time_format)
+                + ", " + getString(R.string.long_date_format), mTask.getDate()).toString();
 
         mUserLab = UserLab.get(getActivity());
         String user = mTask.getUser();
         if (user == null) {
             user = getString(R.string.task_report_no_user);
         } else {
-            user = getString(R.string.task_report_user, mUserLab.getUser(UUID.fromString(user)).getName());
+            user = getString(R.string.task_report_user,
+                    mUserLab.getUser(UUID.fromString(user)).getName());
         }
 
         String report = getString(R.string.task_report,

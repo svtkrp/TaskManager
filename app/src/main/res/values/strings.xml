@@ -27,6 +27,11 @@
         <item>Pick a time...</item>
     </string-array>
 
+    <string name="short_date_format">EEE, MMM d, yyyy</string>
+    <string name="long_date_format">EEEE, MMMM d, yyyy</string>
+    <string name="time_format">HH:mm</string>
+    <string name="date_time_prep">at</string>
+
     <string name="add_new_task_text">Add new task</string>
     <string name="show_subtitle">Show subtitle</string>
     <string name="hide_subtitle">Hide subtitle</string>

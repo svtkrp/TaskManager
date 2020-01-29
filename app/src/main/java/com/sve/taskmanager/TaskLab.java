@@ -55,6 +55,7 @@ public class TaskLab {
     }
 
     public Task getTask(UUID id) {
+        if (id == null) return null;
         TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.UUID + " = ?",
                 new String[] {id.toString()}
@@ -73,12 +74,13 @@ public class TaskLab {
     }
 
     public void addTask(Task task) {
+        if (task == null) return;
         ContentValues values = getContentValues(task);
-
         mDatabase.insert(TaskTable.NAME, null, values);
     }
 
     public void deleteTask(Task task) {
+        if (task == null) return;
         String uuidString = task.getId().toString();
         mDatabase.delete(TaskTable.NAME,
                 TaskTable.Cols.UUID + " = ?",
@@ -87,6 +89,7 @@ public class TaskLab {
     }
 
     public void updateTask(Task task) {
+        if (task == null) return;
         String uuidString = task.getId().toString();
         ContentValues values = getContentValues(task);
         mDatabase.update(TaskTable.NAME, values,
@@ -96,6 +99,7 @@ public class TaskLab {
     }
 
     public void replaceUserWithNull(User user) {
+        if (user == null) return;
         String userId = user.getId().toString();
         ContentValues values;
         Task task;
@@ -125,6 +129,7 @@ public class TaskLab {
     }
 
     public int getTaskCountOfUser(User user) {
+        if (user == null) return getTaskCount();
         String userId = user.getId().toString();
 
         TaskCursorWrapper cursor = queryTasks(
@@ -136,6 +141,7 @@ public class TaskLab {
     }
 
     public List<Task> getTasksOfUser(User user) {
+        if (user == null) return getTasks();
         String userId = user.getId().toString();
         List<Task> tasks = new ArrayList<>();
 
@@ -146,7 +152,7 @@ public class TaskLab {
 
         try {
             if (cursor.getCount() == 0) {
-                return null;
+                return tasks;
             }
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {

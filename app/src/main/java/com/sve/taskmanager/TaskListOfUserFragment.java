@@ -20,19 +20,42 @@ import android.text.format.DateFormat;
 import java.util.List;
 import java.util.UUID;
 
-public class TaskListFragment extends Fragment {
+public class TaskListOfUserFragment extends Fragment {
 
-    public static final String TAG = "com.sve.taskmanager.TaskListFragment";
+    public static final String TAG = "com.sve.taskmanager.TaskListOfUserFragment";
+    private static final String ARG_USER_ID = "user_id";
 
     private RecyclerView mTaskRecyclerView;
     private TaskAdapter mAdapter;
 
     private Button mNewTaskButton;
 
+    private User mUser;
+
+    public static TaskListOfUserFragment newInstance(String userId) {
+        Bundle args = new Bundle();
+        args.putString(ARG_USER_ID, userId);
+
+        TaskListOfUserFragment fragment = new TaskListOfUserFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static Bundle newBundle(UUID userId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_USER_ID, userId);
+        return args;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        if (getArguments() != null) {
+            UUID userId = (UUID) getArguments().getSerializable(ARG_USER_ID);
+            mUser = UserLab.get(getActivity()).getUser(userId);
+        }
     }
 
     @Override
@@ -93,7 +116,7 @@ public class TaskListFragment extends Fragment {
     }
 
     private void updateSubtitle() {
-        int taskCount = TaskLab.get(getActivity()).getTaskCount();
+        int taskCount = TaskLab.get(getActivity()).getTaskCountOfUser(mUser);
 
         String subtitle = getResources().getQuantityString
                 (R.plurals.subtitle_plural, taskCount, taskCount);
@@ -103,7 +126,7 @@ public class TaskListFragment extends Fragment {
     }
 
     private void updateUI() {
-        List<Task> tasks = TaskLab.get(getActivity()).getTasks();
+        List<Task> tasks = TaskLab.get(getActivity()).getTasksOfUser(mUser);
 
         if (mAdapter == null) {
             mAdapter = new TaskAdapter(tasks);

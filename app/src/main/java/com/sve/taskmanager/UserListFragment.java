@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.navigation.Navigation;
+
 import java.util.List;
 
 public class UserListFragment extends Fragment {
@@ -63,11 +65,6 @@ public class UserListFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_user_list, menu);
@@ -92,7 +89,6 @@ public class UserListFragment extends Fragment {
     }
 
     private void deleteUser(User user) {
-        // TODO: for all tasks with this user setUser(null); done???
         TaskLab.get(getActivity()).replaceUserWithNull(user);
         UserLab.get(getActivity()).deleteUser(user);
         updateUI();
@@ -110,13 +106,13 @@ public class UserListFragment extends Fragment {
     private void updateUI() {
         List<User> users = UserLab.get(getActivity()).getUsers();
 
-        if (mAdapter == null) {
+        //if (mAdapter == null) {
             mAdapter = new UserAdapter(users);
             mUserRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setUsers(users);
-            mAdapter.notifyDataSetChanged();
-        }
+        //} else {
+            //mAdapter.setUsers(users);
+            //mAdapter.notifyDataSetChanged();
+        //}
 
         updateSubtitle();
 
@@ -180,7 +176,8 @@ public class UserListFragment extends Fragment {
         @Override
         public void onClick(View view) {
             // TODO: open all tasks of this user (fragment)
-
+            Bundle bundle = TaskListOfUserFragment.newBundle(mUser.getId());
+            Navigation.findNavController(view).navigate(R.id.action_nav_users_to_nav_tasks_of_user, bundle);
         }
     }
 

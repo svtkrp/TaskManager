@@ -1,4 +1,4 @@
-package com.sve.taskmanager;
+package com.sve.taskmanager.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,6 +19,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.navigation.Navigation;
+
+import com.sve.taskmanager.R;
+import com.sve.taskmanager.TaskLab;
+import com.sve.taskmanager.User;
+import com.sve.taskmanager.UserLab;
 
 import java.util.List;
 
@@ -106,13 +111,8 @@ public class UserListFragment extends Fragment {
     private void updateUI() {
         List<User> users = UserLab.get(getActivity()).getUsers();
 
-        //if (mAdapter == null) {
-            mAdapter = new UserAdapter(users);
-            mUserRecyclerView.setAdapter(mAdapter);
-        //} else {
-            //mAdapter.setUsers(users);
-            //mAdapter.notifyDataSetChanged();
-        //}
+        mAdapter = new UserAdapter(users);
+        mUserRecyclerView.setAdapter(mAdapter);
 
         updateSubtitle();
 
@@ -175,7 +175,6 @@ public class UserListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            // TODO: open all tasks of this user (fragment)
             Bundle bundle = TaskListOfUserFragment.newBundle(mUser.getId());
             Navigation.findNavController(view).navigate(R.id.action_nav_users_to_nav_tasks_of_user, bundle);
         }
@@ -204,10 +203,6 @@ public class UserListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mUsers.size();
-        }
-
-        public void setUsers(List<User> users) {
-            mUsers = users;
         }
     }
 }

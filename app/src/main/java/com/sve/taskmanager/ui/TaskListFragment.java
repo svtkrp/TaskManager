@@ -1,61 +1,42 @@
-package com.sve.taskmanager;
+package com.sve.taskmanager.ui;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.sve.taskmanager.R;
+import com.sve.taskmanager.Task;
+import com.sve.taskmanager.TaskLab;
+
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.text.format.DateFormat;
 
 import java.util.List;
-import java.util.UUID;
 
-public class TaskListOfUserFragment extends Fragment {
+public class TaskListFragment extends Fragment {
 
-    public static final String TAG = "com.sve.taskmanager.TaskListOfUserFragment";
-    private static final String ARG_USER_ID = "user_id";
+    public static final String TAG = "com.sve.taskmanager.ui.TaskListFragment";
 
-    private RecyclerView mTaskRecyclerView;
-    private TaskAdapter mAdapter;
+    protected RecyclerView mTaskRecyclerView;
+    protected TaskAdapter mAdapter;
 
-    private Button mNewTaskButton;
-
-    private User mUser;
-
-    public static TaskListOfUserFragment newInstance(String userId) {
-        Bundle args = new Bundle();
-        args.putString(ARG_USER_ID, userId);
-
-        TaskListOfUserFragment fragment = new TaskListOfUserFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static Bundle newBundle(UUID userId) {
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_USER_ID, userId);
-        return args;
-    }
+    protected Button mNewTaskButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-        if (getArguments() != null) {
-            UUID userId = (UUID) getArguments().getSerializable(ARG_USER_ID);
-            mUser = UserLab.get(getActivity()).getUser(userId);
-        }
     }
 
     @Override
@@ -85,11 +66,6 @@ public class TaskListOfUserFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_task_list, menu);
@@ -115,8 +91,8 @@ public class TaskListOfUserFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void updateSubtitle() {
-        int taskCount = TaskLab.get(getActivity()).getTaskCountOfUser(mUser);
+    protected void updateSubtitle() {
+        int taskCount = TaskLab.get(getActivity()).getTaskCount();
 
         String subtitle = getResources().getQuantityString
                 (R.plurals.subtitle_plural, taskCount, taskCount);
@@ -125,8 +101,8 @@ public class TaskListOfUserFragment extends Fragment {
         activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
-    private void updateUI() {
-        List<Task> tasks = TaskLab.get(getActivity()).getTasksOfUser(mUser);
+    protected void updateUI() {
+        List<Task> tasks = TaskLab.get(getActivity()).getTasks();
 
         if (mAdapter == null) {
             mAdapter = new TaskAdapter(tasks);
@@ -145,7 +121,7 @@ public class TaskListOfUserFragment extends Fragment {
         }
     }
 
-    private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    protected class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Task mTask;
 
@@ -179,7 +155,7 @@ public class TaskListOfUserFragment extends Fragment {
         }
     }
 
-    private class TaskAdapter extends RecyclerView.Adapter<TaskHolder> {
+    protected class TaskAdapter extends RecyclerView.Adapter<TaskHolder> {
 
         private List<Task> mTasks;
 
@@ -209,3 +185,5 @@ public class TaskListOfUserFragment extends Fragment {
         }
     }
 }
+
+

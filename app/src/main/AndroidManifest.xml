@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".NavDrawerActivity">
+            android:name=".ui.NavDrawerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,8 +19,8 @@
         </activity>
 
         <activity
-            android:name=".TaskPagerActivity"
-            android:parentActivityName=".NavDrawerActivity">
+            android:name=".ui.TaskPagerActivity"
+            android:parentActivityName=".ui.NavDrawerActivity">
         </activity>
     </application>
 

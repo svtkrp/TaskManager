@@ -1,4 +1,4 @@
-package com.sve.taskmanager;
+package com.sve.taskmanager.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,6 +10,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+
+import com.sve.taskmanager.R;
 
 public class UserCreaterFragment extends DialogFragment {
     public static final String EXTRA_USER_NAME = "user_name";

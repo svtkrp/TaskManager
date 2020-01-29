@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/nav_tasks"
-        android:name="com.sve.taskmanager.TaskListFragment"
+        android:name="com.sve.taskmanager.ui.TaskListFragment"
         android:label="@string/menu_tasks"
         tools:layout="@layout/fragment_item_list_with_adding_new" />
 
     <fragment
         android:id="@+id/nav_users"
-        android:name="com.sve.taskmanager.UserListFragment"
+        android:name="com.sve.taskmanager.ui.UserListFragment"
         android:label="@string/menu_users"
         tools:layout="@layout/fragment_item_list_with_adding_new" >
         <action
@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/nav_tasks_of_user"
-        android:name="com.sve.taskmanager.TaskListOfUserFragment"
+        android:name="com.sve.taskmanager.ui.TaskListOfUserFragment"
         android:label="@string/menu_tasks"
         tools:layout="@layout/fragment_item_list_with_adding_new" />
 

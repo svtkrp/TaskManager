@@ -1,4 +1,4 @@
-package com.sve.taskmanager;
+package com.sve.taskmanager.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,6 +24,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.sve.taskmanager.R;
+import com.sve.taskmanager.Task;
+import com.sve.taskmanager.TaskLab;
+import com.sve.taskmanager.User;
+import com.sve.taskmanager.UserLab;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -56,6 +56,7 @@ public class TaskListOfUserFragment extends TaskListFragment {
         activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
+    @Override
     protected void updateUI() {
         List<Task> tasks = TaskLab.get(getActivity()).getTasksOfUser(mUser);
 

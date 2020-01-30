@@ -56,6 +56,7 @@ public class UserLab {
     }
 
     public User getUser(UUID id) {
+        if (id == null) return null;
         UserCursorWrapper cursor = queryUsers(
                 UserTable.Cols.UUID + " = ?",
                 new String[] {id.toString()}
@@ -74,12 +75,13 @@ public class UserLab {
     }
 
     public void addUser(User user) {
+        if (user == null) return;
         ContentValues values = getContentValues(user);
-
         mDatabase.insert(UserTable.NAME, null, values);
     }
 
     public void deleteUser(User user) {
+        if (user == null) return;
         String uuidString = user.getId().toString();
         mDatabase.delete(UserTable.NAME,
                 UserTable.Cols.UUID + " = ?",
@@ -88,6 +90,7 @@ public class UserLab {
     }
 
     public void updateUser(User user) {
+        if (user == null) return;
         String uuidString = user.getId().toString();
         ContentValues values = getContentValues(user);
         mDatabase.update(UserTable.NAME, values,

@@ -14,6 +14,11 @@ public class User {
         mId = id;
     }
 
+    public User(UUID id, String name) {
+        this(id);
+        mName = name;
+    }
+
     public UUID getId() {
         return mId;
     }

@@ -94,15 +94,14 @@ public class UserListFragment extends Fragment {
     }
 
     private void deleteUser(User user) {
-        TaskLab.get(getActivity()).replaceUserWithNull(user);
-        UserLab.get(getActivity()).deleteUser(user);
+        UserLab.get(getActivity()).deleteUser(user, TaskLab.get(getActivity()));
         updateUI();
     }
 
     private void updateSubtitle() {
         int userCount = UserLab.get(getActivity()).getUserCount();
         String subtitle = getResources().getQuantityString
-                (R.plurals.subtitle_plural_users, userCount, userCount);
+                (R.plurals.user_count_plural, userCount, userCount);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setSubtitle(subtitle);
@@ -145,7 +144,8 @@ public class UserListFragment extends Fragment {
 
         private User mUser;
         private TextView mNameTextView;
-        private TextView mTaskCountTextView;
+        private TextView mTaskCountAsCustomerTextView;
+        private TextView mTaskCountAsExecutorTextView;
         private ImageButton mDeleteUserButton;
 
         public UserHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -154,7 +154,8 @@ public class UserListFragment extends Fragment {
             itemView.setOnClickListener(this);
 
             mNameTextView = itemView.findViewById(R.id.user_name);
-            mTaskCountTextView = itemView.findViewById(R.id.user_task_count);
+            mTaskCountAsCustomerTextView = itemView.findViewById(R.id.customer_task_count);
+            mTaskCountAsExecutorTextView = itemView.findViewById(R.id.executor_task_count);
             mDeleteUserButton = itemView.findViewById(R.id.delete_user);
             mDeleteUserButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -167,16 +168,31 @@ public class UserListFragment extends Fragment {
         public void bind(User user) {
             mUser = user;
             mNameTextView.setText(mUser.getName());
-            int taskCount = TaskLab.get(getActivity()).getTaskCountOfUser(mUser);
-            String taskCountText = getResources().getQuantityString
-                    (R.plurals.subtitle_plural, taskCount, taskCount);
-            mTaskCountTextView.setText(taskCountText);
+
+            int taskCountAsCustomer = TaskLab.get(getActivity()).getTaskCountOfCustomer(mUser);
+            String taskCountAsCustomerText = getString(R.string.task_count_as_customer_text,
+                    getResources().getQuantityString(R.plurals.task_count_plural,
+                            taskCountAsCustomer, taskCountAsCustomer));
+            mTaskCountAsCustomerTextView.setText(taskCountAsCustomerText);
+
+            if (mUser.equals(UserLab.ADMIN)) {
+                mDeleteUserButton.setClickable(false);
+                mDeleteUserButton.setVisibility(View.INVISIBLE);
+                mTaskCountAsExecutorTextView.setVisibility(View.GONE);
+            } else {
+                int taskCountAsExecutor = TaskLab.get(getActivity()).getTaskCountOfExecutor(mUser);
+                String taskCountAsExecutorText = getString(R.string.task_count_as_executor_text,
+                        getResources().getQuantityString(R.plurals.task_count_plural,
+                                taskCountAsExecutor, taskCountAsExecutor));
+                mTaskCountAsExecutorTextView.setText(taskCountAsExecutorText);
+            }
         }
 
         @Override
         public void onClick(View view) {
             Bundle bundle = TaskListOfUserFragment.newBundle(mUser.getId());
-            Navigation.findNavController(view).navigate(R.id.action_nav_users_to_nav_tasks_of_user, bundle);
+            Navigation.findNavController(view)
+                    .navigate(R.id.action_nav_users_to_nav_tasks_of_user, bundle);
         }
     }
 

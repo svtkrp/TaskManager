@@ -10,7 +10,8 @@ public class Task {
     private Date mDate;
     private boolean mSolved;
 
-    private String mUser;
+    private String mCustomer;
+    private String mExecutor;
 
     public Task() {
         this(UUID.randomUUID());
@@ -19,6 +20,7 @@ public class Task {
     public Task(UUID id) {
         mId = id;
         mDate = new Date();
+        mCustomer = UserLab.ADMIN_ID.toString();
     }
 
     public UUID getId() {
@@ -49,12 +51,20 @@ public class Task {
         mSolved = solved;
     }
 
-    public String getUser() {
-        return mUser;
+    public String getCustomer() {
+        return mCustomer;
     }
 
-    public void setUser(String user) {
-        mUser = user;
+    public void setCustomer(String customer) {
+        mCustomer = customer;
+    }
+
+    public String getExecutor() {
+        return mExecutor;
+    }
+
+    public void setExecutor(String executor) {
+        mExecutor = executor;
     }
 
     @Override

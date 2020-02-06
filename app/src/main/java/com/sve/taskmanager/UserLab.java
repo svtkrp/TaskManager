@@ -15,6 +15,10 @@ import java.util.UUID;
 
 public class UserLab {
 
+    public static final UUID ADMIN_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    public static final String ADMIN_NAME = "Admin";
+    public static final User ADMIN = new User(ADMIN_ID, ADMIN_NAME);
+
     private static UserLab sUserLab;
 
     private Context mContext;
@@ -30,6 +34,23 @@ public class UserLab {
     private UserLab(Context context) {
         mContext = context.getApplicationContext();
         mDatabase = new UserBaseHelper(mContext).getWritableDatabase();
+        checkAndAddAdmin();
+    }
+
+    private void checkAndAddAdmin() {
+        UserCursorWrapper cursor = queryUsers(
+                UserTable.Cols.UUID + " = ?",
+                new String[] {ADMIN_ID.toString()}
+        );
+        try {
+            if (cursor.getCount() == 0) {
+                addUser(new User(ADMIN_ID, ADMIN_NAME));
+            //} else if (cursor.getCount() > 1) {
+                //fixme: exception / deleting
+            }
+        } finally {
+            cursor.close();
+        }
     }
 
     public int getUserCount() {
@@ -46,6 +67,28 @@ public class UserLab {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 users.add(cursor.getUser());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return users;
+    }
+
+    public List<User> getUsersWithoutAdmin() {
+        List<User> users = new ArrayList<>();
+        User user;
+
+        UserCursorWrapper cursor = queryUsers(null, null);
+
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                user = cursor.getUser();
+                if (!user.equals(ADMIN)) {
+                    users.add(user);
+                }
                 cursor.moveToNext();
             }
         } finally {
@@ -80,8 +123,12 @@ public class UserLab {
         mDatabase.insert(UserTable.NAME, null, values);
     }
 
-    public void deleteUser(User user) {
+    public void deleteUser(User user, TaskLab taskLab) {
         if (user == null) return;
+
+        taskLab.replaceCustomerWithAdmin(user);
+        taskLab.replaceExecutorWithNull(user);
+
         String uuidString = user.getId().toString();
         mDatabase.delete(UserTable.NAME,
                 UserTable.Cols.UUID + " = ?",
@@ -109,7 +156,6 @@ public class UserLab {
                 null,
                 null
         );
-
         return new UserCursorWrapper(cursor);
     }
 

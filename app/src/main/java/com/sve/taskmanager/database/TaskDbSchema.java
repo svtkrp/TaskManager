@@ -9,7 +9,8 @@ public class TaskDbSchema {
             public static final String TITLE = "title";
             public static final String DATE = "date";
             public static final String SOLVED = "solved";
-            public static final String USER = "user";
+            public static final String CUSTOMER = "customer";
+            public static final String EXECUTOR = "executor";
         }
     }
 }

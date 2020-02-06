@@ -47,18 +47,21 @@ public class TaskListOfUserFragment extends TaskListFragment {
 
     @Override
     protected void updateSubtitle() {
-        int taskCount = TaskLab.get(getActivity()).getTaskCountOfUser(mUser);
+        int taskCountAsCustomer = TaskLab.get(getActivity()).getTaskCountOfCustomer(mUser);
+        int taskCountAsExecutor = TaskLab.get(getActivity()).getTaskCountOfExecutor(mUser);
 
-        String subtitle = getResources().getQuantityString
-                (R.plurals.subtitle_plural, taskCount, taskCount);
+        String subtitle = getString(R.string.common_task_count,
+                taskCountAsCustomer, taskCountAsExecutor);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
+    //fixme: divide as customer & as executor tasks
     @Override
     protected void updateUI() {
-        List<Task> tasks = TaskLab.get(getActivity()).getTasksOfUser(mUser);
+        List<Task> tasks = TaskLab.get(getActivity()).getTasksOfCustomer(mUser);
+        tasks.addAll(TaskLab.get(getActivity()).getTasksOfExecutor(mUser));
 
         if (mAdapter == null) {
             mAdapter = new TaskAdapter(tasks);

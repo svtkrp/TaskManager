@@ -44,15 +44,18 @@ public class TaskFragment extends Fragment {
     private static final String ARG_TASK_ID = "task_id";
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
-    private static final String DIALOG_USER = "DialogUser";
+    private static final String DIALOG_USER_CUSTOMER = "DialogUserCustomer";
+    private static final String DIALOG_USER_EXECUTOR = "DialogUserExecutor";
 
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 1;
-    private static final int REQUEST_USER = 2;
+    private static final int REQUEST_USER_CUSTOMER = 2;
+    private static final int REQUEST_USER_EXECUTOR = 3;
 
     private static final int[] MINUTES = {0, 8*60, 12*60, 15*60, 17*60};
 
     private Task mTask;
+
     private EditText mTitleField;
 
     private Spinner mDateSpinner;
@@ -66,14 +69,22 @@ public class TaskFragment extends Fragment {
 
     private CheckBox mSolvedCheckBox;
 
-    private Spinner mUserSpinner;
-    private AdapterWithCustomItem mUserAdapter;
     private UserLab mUserLab;
-    private List<User> mUsers;
-    private String[] mUserNames;
-    private boolean mUserItemWasClicked = false;
 
-    private ImageButton mDeleteUserButton;
+    private Spinner mCustomerSpinner;
+    private AdapterWithCustomItem mCustomerAdapter;
+    private List<User> mCustomers;
+    private String[] mCustomerNames;
+    private boolean mCustomerItemWasClicked = false;
+
+    private Spinner mExecutorSpinner;
+    private AdapterWithCustomItem mExecutorAdapter;
+    private List<User> mExecutors;
+    private String[] mExecutorNames;
+    private boolean mExecutorItemWasClicked = false;
+
+    private ImageButton mDeleteExecutorButton;
+
     private Button mReportButton;
 
     public static TaskFragment newInstance(UUID taskId) {
@@ -180,34 +191,60 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        mUserSpinner = view.findViewById(R.id.task_user);
-        updateUserView();
+        mCustomerSpinner = view.findViewById(R.id.task_customer);
+        mExecutorSpinner = view.findViewById(R.id.task_executor);
+        updateCustomerExecutorView();
 
-        mUserSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mCustomerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (mUserItemWasClicked) {
-                    if (position == 0) {
-                        mTask.setUser(null);
-                    } else if (position == mUserNames.length - 1) {
+                if (mCustomerItemWasClicked) {
+                    if (position == mCustomerNames.length - 1) {
                         FragmentManager fragmentManager = getFragmentManager();
                         UserCreaterFragment dialog = UserCreaterFragment.newInstance();
-                        dialog.setTargetFragment(TaskFragment.this, REQUEST_USER);
-                        dialog.show(fragmentManager, DIALOG_USER);
+                        dialog.setTargetFragment(TaskFragment.this, REQUEST_USER_CUSTOMER);
+                        dialog.show(fragmentManager, DIALOG_USER_CUSTOMER);
                     } else {
-                        mTask.setUser(mUsers.get(position - 1).getId().toString());
+                        mTask.setCustomer(mCustomers.get(position).getId().toString());
                     }
                 } else {
-                    mUserItemWasClicked = true;
+                    mCustomerItemWasClicked = true;
                 }
 
-                if (mTask.getUser() != null) {
-                    mDeleteUserButton.setVisibility(VISIBLE);
-                    mUserAdapter.setCustomText(mUserLab
-                            .getUser(UUID.fromString(mTask.getUser())).getName());
+                mCustomerAdapter.setCustomText(mUserLab
+                        .getUser(UUID.fromString(mTask.getCustomer())).getName());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        mExecutorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (mExecutorItemWasClicked) {
+                    if (position == 0) {
+                        mTask.setExecutor(null);
+                    } else if (position == mExecutorNames.length - 1) {
+                        FragmentManager fragmentManager = getFragmentManager();
+                        UserCreaterFragment dialog = UserCreaterFragment.newInstance();
+                        dialog.setTargetFragment(TaskFragment.this, REQUEST_USER_EXECUTOR);
+                        dialog.show(fragmentManager, DIALOG_USER_EXECUTOR);
+                    } else {
+                        mTask.setExecutor(mExecutors.get(position - 1).getId().toString());
+                    }
                 } else {
-                    mDeleteUserButton.setVisibility(GONE);
-                    mUserAdapter.setCustomText(getString(R.string.task_user_text));
+                    mExecutorItemWasClicked = true;
+                }
+
+                if (mTask.getExecutor() != null) {
+                    mDeleteExecutorButton.setVisibility(VISIBLE);
+                    mExecutorAdapter.setCustomText(mUserLab
+                            .getUser(UUID.fromString(mTask.getExecutor())).getName());
+                } else {
+                    mDeleteExecutorButton.setVisibility(GONE);
+                    mExecutorAdapter.setCustomText(getString(R.string.choose_task_executor_text));
                 }
             }
 
@@ -216,11 +253,11 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        mDeleteUserButton = view.findViewById(R.id.task_user_delete);
-        mDeleteUserButton.setOnClickListener(new View.OnClickListener() {
+        mDeleteExecutorButton = view.findViewById(R.id.task_executor_delete);
+        mDeleteExecutorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mUserSpinner.setSelection(0);
+                mExecutorSpinner.setSelection(0);
             }
         });
 
@@ -255,15 +292,26 @@ public class TaskFragment extends Fragment {
             mTask.setDate(date);
             updateTimeView();
 
-        } else if (requestCode == REQUEST_USER) {
+        } else if (requestCode == REQUEST_USER_CUSTOMER) {
             String name = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_NAME);
             if ((name != null)&&(!name.equals(""))) {
                 User user = new User();
                 user.setName(name);
                 mUserLab.addUser(user);
-                mTask.setUser(user.getId().toString());
+                mTask.setCustomer(user.getId().toString());
 
-                updateUserView();
+                updateCustomerExecutorView();
+            }
+
+        } else if (requestCode == REQUEST_USER_EXECUTOR) {
+            String name = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_NAME);
+            if ((name != null)&&(!name.equals(""))) {
+                User user = new User();
+                user.setName(name);
+                mUserLab.addUser(user);
+                mTask.setExecutor(user.getId().toString());
+
+                updateCustomerExecutorView();
             }
         }
     }
@@ -376,32 +424,51 @@ public class TaskFragment extends Fragment {
         return calendar.get(Calendar.HOUR_OF_DAY)*60 + calendar.get(Calendar.MINUTE);
     }
 
-    private void updateUserView() {
+    private void updateCustomerExecutorView() {
         mUserLab = UserLab.get(getActivity());
-        mUsers = mUserLab.getUsers();
-        User user;
-        if (mTask.getUser() == null) {
-            user = null;
-        } else {
-            user = mUserLab.getUser(UUID.fromString(mTask.getUser()));
+
+        mCustomers = mUserLab.getUsers();
+        User customer = mUserLab.getUser(UUID.fromString(mTask.getCustomer()));
+        mCustomerNames = new String[mCustomers.size() + 1];
+        for (int i = 0; i < mCustomers.size(); i++) {
+            mCustomerNames[i] = mCustomers.get(i).getName();
+        }
+        mCustomerNames[mCustomerNames.length - 1] = getString(R.string.add_new_user_text);
+
+        mCustomerAdapter = new AdapterWithCustomItem(getActivity(), mCustomerNames);
+        mCustomerSpinner.setAdapter(mCustomerAdapter);
+
+        for (int j = 0; j < mCustomers.size(); j++) {
+            if (customer.equals(mCustomers.get(j))) {
+                mCustomerSpinner.setSelection(j);
+                break;
+            }
         }
 
-        mUserNames = new String[mUsers.size() + 2];
-        for (int i = 0; i < mUsers.size(); i++) {
-            mUserNames[i + 1] = mUsers.get(i).getName();
-        }
-        mUserNames[0] = getString(R.string.no_task_user_text);
-        mUserNames[mUserNames.length - 1] = getString(R.string.add_new_user_text);
-
-        mUserAdapter = new AdapterWithCustomItem(getActivity(), mUserNames);
-        mUserSpinner.setAdapter(mUserAdapter);
-
-        if (user == null) {
-            mUserSpinner.setSelection(0);
+        mExecutors = mUserLab.getUsersWithoutAdmin();
+        User executor;
+        if (mTask.getExecutor() == null) {
+            executor = null;
         } else {
-            for (int j = 0; j < mUsers.size(); j++) {
-                if (user.equals(mUsers.get(j))) {
-                    mUserSpinner.setSelection(j + 1);
+            executor = mUserLab.getUser(UUID.fromString(mTask.getExecutor()));
+        }
+
+        mExecutorNames = new String[mExecutors.size() + 2];
+        for (int i = 0; i < mExecutors.size(); i++) {
+            mExecutorNames[i + 1] = mExecutors.get(i).getName();
+        }
+        mExecutorNames[0] = getString(R.string.no_task_executor_text);
+        mExecutorNames[mExecutorNames.length - 1] = getString(R.string.add_new_user_text);
+
+        mExecutorAdapter = new AdapterWithCustomItem(getActivity(), mExecutorNames);
+        mExecutorSpinner.setAdapter(mExecutorAdapter);
+
+        if (executor == null) {
+            mExecutorSpinner.setSelection(0);
+        } else {
+            for (int j = 0; j < mExecutors.size(); j++) {
+                if (executor.equals(mExecutors.get(j))) {
+                    mExecutorSpinner.setSelection(j + 1);
                     break;
                 }
             }
@@ -421,16 +488,17 @@ public class TaskFragment extends Fragment {
                 + ", " + getString(R.string.long_date_format), mTask.getDate()).toString();
 
         mUserLab = UserLab.get(getActivity());
-        String user = mTask.getUser();
-        if (user == null) {
-            user = getString(R.string.task_report_no_user);
+        String customerName = mUserLab.getUser(UUID.fromString(mTask.getCustomer())).getName();
+        String executorString;
+        if (mTask.getExecutor() == null) {
+            executorString = getString(R.string.task_report_no_executor);
         } else {
-            user = getString(R.string.task_report_user,
-                    mUserLab.getUser(UUID.fromString(user)).getName());
+            executorString = getString(R.string.task_report_executor,
+                    mUserLab.getUser(UUID.fromString(mTask.getExecutor())).getName());
         }
 
-        String report = getString(R.string.task_report,
-                mTask.getTitle(), dateString, solvedString, user);
+        String report = getString(R.string.task_report_text,
+                mTask.getTitle(), dateString, solvedString, customerName, executorString);
         return report;
     }
 

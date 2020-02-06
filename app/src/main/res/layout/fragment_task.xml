@@ -55,15 +55,23 @@
         app:layout_constraintTop_toBottomOf="@id/task_date_date" />
 
     <Spinner
-        android:id="@+id/task_user"
+        android:id="@+id/task_customer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/task_user_delete"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/task_solved" />
 
+    <Spinner
+        android:id="@+id/task_executor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/task_executor_delete"
+        app:layout_constraintTop_toBottomOf="@id/task_customer" />
+
     <ImageButton
-        android:id="@+id/task_user_delete"
+        android:id="@+id/task_executor_delete"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginLeft="@dimen/default_margin"
@@ -71,18 +79,18 @@
         android:background="#FAFAFA"
         android:padding="4dp"
         android:src="@drawable/ic_clear_holo_light"
-        app:layout_constraintBottom_toBottomOf="@id/task_user"
-        app:layout_constraintLeft_toRightOf="@id/task_user"
+        app:layout_constraintBottom_toBottomOf="@id/task_executor"
+        app:layout_constraintLeft_toRightOf="@id/task_executor"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/task_solved" />
+        app:layout_constraintTop_toBottomOf="@id/task_customer" />
 
     <Button
         android:id="@+id/task_report"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/task_report_text"
+        android:text="@string/send_report_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/task_user" />
+        app:layout_constraintTop_toBottomOf="@id/task_executor" />
 
 </android.support.constraint.ConstraintLayout>

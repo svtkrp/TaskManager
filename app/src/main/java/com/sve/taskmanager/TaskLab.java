@@ -37,21 +37,8 @@ public class TaskLab {
     }
 
     public List<Task> getTasks() {
-        List<Task> tasks = new ArrayList<>();
-
         TaskCursorWrapper cursor = queryTasks(null, null);
-
-        try {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                tasks.add(cursor.getTask());
-                cursor.moveToNext();
-            }
-        } finally {
-            cursor.close();
-        }
-
-        return tasks;
+        return getTaskList(cursor);
     }
 
     public Task getTask(UUID id) {
@@ -65,7 +52,6 @@ public class TaskLab {
             if (cursor.getCount() == 0) {
                 return null;
             }
-
             cursor.moveToFirst();
             return cursor.getTask();
         } finally {
@@ -98,15 +84,15 @@ public class TaskLab {
         );
     }
 
-    public void replaceUserWithNull(User user) {
-        if (user == null) return;
-        String userId = user.getId().toString();
+    public void replaceCustomerWithAdmin(User customer) {
+        if (customer == null) return;
+        String customerId = customer.getId().toString();
         ContentValues values;
         Task task;
 
         TaskCursorWrapper cursor = queryTasks(
-                TaskTable.Cols.USER + " = ?",
-                new String[] {userId}
+                TaskTable.Cols.CUSTOMER + " = ?",
+                new String[] {customerId}
         );
 
         try {
@@ -116,7 +102,7 @@ public class TaskLab {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 task = cursor.getTask();
-                values = getContentValuesUserIsNull(task);
+                values = getContentValuesCustomerIsAdmin(task);
                 mDatabase.update(TaskTable.NAME, values,
                         TaskTable.Cols.UUID + " = ?",
                         new String[] {task.getId().toString()}
@@ -128,27 +114,124 @@ public class TaskLab {
         }
     }
 
-    public int getTaskCountOfUser(User user) {
-        if (user == null) return getTaskCount();
-        String userId = user.getId().toString();
+    public void replaceExecutorWithNull(User executor) {
+        if (executor == null) return;
+        String executorId = executor.getId().toString();
+        ContentValues values;
+        Task task;
 
         TaskCursorWrapper cursor = queryTasks(
-                TaskTable.Cols.USER + " = ?",
-                new String[] {userId}
+                TaskTable.Cols.EXECUTOR + " = ?",
+                new String[] {executorId}
         );
 
+        try {
+            if (cursor.getCount() == 0) {
+                return;
+            }
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                task = cursor.getTask();
+                values = getContentValuesExecutorIsNull(task);
+                mDatabase.update(TaskTable.NAME, values,
+                        TaskTable.Cols.UUID + " = ?",
+                        new String[] {task.getId().toString()}
+                );
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public int getTaskCountOfCustomer(User customer) {
+        //fixme if (customer == null) return
+        String customerId = customer.getId().toString();
+        TaskCursorWrapper cursor = queryTasks(
+                TaskTable.Cols.CUSTOMER + " = ?",
+                new String[] {customerId}
+        );
         return cursor.getCount();
     }
 
-    public List<Task> getTasksOfUser(User user) {
-        if (user == null) return getTasks();
-        String userId = user.getId().toString();
-        List<Task> tasks = new ArrayList<>();
-
+    public List<Task> getTasksOfCustomer(User customer) {
+        //fixme if (customer == null) return
+        String customerId = customer.getId().toString();
         TaskCursorWrapper cursor = queryTasks(
-                TaskTable.Cols.USER + " = ?",
-                new String[] {userId}
+                TaskTable.Cols.CUSTOMER + " = ?",
+                new String[] {customerId}
         );
+        return getTaskList(cursor);
+    }
+
+    public int getTaskCountOfExecutor(User executor) {
+        //fixme if (executor == null) return
+        String executorId = executor.getId().toString();
+        TaskCursorWrapper cursor = queryTasks(
+                TaskTable.Cols.EXECUTOR + " = ?",
+                new String[] {executorId}
+        );
+        return cursor.getCount();
+    }
+
+    public List<Task> getTasksOfExecutor(User executor) {
+        //fixme if (executor == null) return
+        String executorId = executor.getId().toString();
+        TaskCursorWrapper cursor = queryTasks(
+                TaskTable.Cols.EXECUTOR + " = ?",
+                new String[] {executorId}
+        );
+        return getTaskList(cursor);
+    }
+
+    private TaskCursorWrapper queryTasks(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                TaskTable.NAME,
+                null, // Все столбцы
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+        return new TaskCursorWrapper(cursor);
+    }
+
+    private static ContentValues getContentValues(Task task) {
+        ContentValues values = new ContentValues();
+        values.put(TaskTable.Cols.UUID, task.getId().toString());
+        values.put(TaskTable.Cols.TITLE, task.getTitle());
+        values.put(TaskTable.Cols.DATE, task.getDate().getTime());
+        values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
+        values.put(TaskTable.Cols.CUSTOMER, task.getCustomer());
+        values.put(TaskTable.Cols.EXECUTOR, task.getExecutor());
+        return values;
+    }
+
+    private static ContentValues getContentValuesCustomerIsAdmin(Task task) {
+        ContentValues values = new ContentValues();
+        values.put(TaskTable.Cols.UUID, task.getId().toString());
+        values.put(TaskTable.Cols.TITLE, task.getTitle());
+        values.put(TaskTable.Cols.DATE, task.getDate().getTime());
+        values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
+        values.put(TaskTable.Cols.CUSTOMER, UserLab.ADMIN_ID.toString());
+        values.put(TaskTable.Cols.EXECUTOR, task.getExecutor());
+        return values;
+    }
+
+    private static ContentValues getContentValuesExecutorIsNull(Task task) {
+        ContentValues values = new ContentValues();
+        values.put(TaskTable.Cols.UUID, task.getId().toString());
+        values.put(TaskTable.Cols.TITLE, task.getTitle());
+        values.put(TaskTable.Cols.DATE, task.getDate().getTime());
+        values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
+        values.put(TaskTable.Cols.CUSTOMER, task.getCustomer());
+        values.putNull(TaskTable.Cols.EXECUTOR);
+        return values;
+    }
+
+    private static List<Task> getTaskList(TaskCursorWrapper cursor) {
+        List<Task> tasks = new ArrayList<>();
 
         try {
             if (cursor.getCount() == 0) {
@@ -164,39 +247,5 @@ public class TaskLab {
         }
 
         return tasks;
-    }
-
-    private TaskCursorWrapper queryTasks(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(
-                TaskTable.NAME,
-                null, // Все столбцы
-                whereClause,
-                whereArgs,
-                null,
-                null,
-                null
-        );
-
-        return new TaskCursorWrapper(cursor);
-    }
-
-    private static ContentValues getContentValues(Task task) {
-        ContentValues values = new ContentValues();
-        values.put(TaskTable.Cols.UUID, task.getId().toString());
-        values.put(TaskTable.Cols.TITLE, task.getTitle());
-        values.put(TaskTable.Cols.DATE, task.getDate().getTime());
-        values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
-        values.put(TaskTable.Cols.USER, task.getUser());
-        return values;
-    }
-
-    private static ContentValues getContentValuesUserIsNull(Task task) {
-        ContentValues values = new ContentValues();
-        values.put(TaskTable.Cols.UUID, task.getId().toString());
-        values.put(TaskTable.Cols.TITLE, task.getTitle());
-        values.put(TaskTable.Cols.DATE, task.getDate().getTime());
-        values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
-        values.putNull(TaskTable.Cols.USER);
-        return values;
     }
 }

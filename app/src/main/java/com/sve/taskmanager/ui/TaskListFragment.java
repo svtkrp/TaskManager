@@ -95,7 +95,7 @@ public class TaskListFragment extends Fragment {
         int taskCount = TaskLab.get(getActivity()).getTaskCount();
 
         String subtitle = getResources().getQuantityString
-                (R.plurals.subtitle_plural, taskCount, taskCount);
+                (R.plurals.task_count_plural, taskCount, taskCount);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setSubtitle(subtitle);

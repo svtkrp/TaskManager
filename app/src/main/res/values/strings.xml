@@ -33,38 +33,39 @@
     <string name="date_time_prep">at</string>
 
     <string name="add_new_task_text">Add new task</string>
-    <string name="show_subtitle">Show subtitle</string>
-    <string name="hide_subtitle">Hide subtitle</string>
     <string name="delete_task_text">Delete task</string>
 
-    <plurals name="subtitle_plural">
+    <plurals name="task_count_plural">
         <item quantity="one">%1$d task</item>
         <item quantity="other">%1$d tasks</item>
     </plurals>
 
-    <string name="task_user_text">Choose user...</string>
-    <string name="task_user_chosen_text">User is %s</string>
     <string name="add_new_user_text">Add new user...</string>
-    <string name="no_task_user_text">No user</string>
-
     <string name="add_new_user_button">Add new user</string>
-    <string name="delete_user_text">Delete user</string>
     <string name="new_user_name_hint">Enter new user\'s name...</string>
+    <string name="delete_user_text">Delete user</string>
+    <string name="tasks_of_user_title">%1$s\'s tasks</string>
 
-    <plurals name="subtitle_plural_users">
+    <plurals name="user_count_plural">
         <item quantity="one">%1$d user</item>
         <item quantity="other">%1$d users</item>
     </plurals>
 
-    <string name="task_report_text">Send user report</string>
+    <string name="task_customer_text">Customer is %s</string>
+    <string name="choose_task_executor_text">Choose executor...</string>
+    <string name="task_executor_text">Executor is %s</string>
+    <string name="no_task_executor_text">No executor</string>
+    <string name="task_count_as_customer_text">%s as customer</string>
+    <string name="task_count_as_executor_text">%s as executor</string>
+    <string name="common_task_count">%1$d as customer &amp; %2$d as executor</string>
 
-    <string name="task_report">Task: %1$s.
-        The task should be solved before %2$s. %3$s, and %4$s
-    </string>
+    <string name="send_report_button">Send task report</string>
+    <string name="task_report_text">Task: %1$s.
+        The task should be solved before %2$s. %3$s, the customer is %4$s, and %5$s.</string>
     <string name="task_report_solved">The case is solved</string>
     <string name="task_report_unsolved">The case is not solved</string>
-    <string name="task_report_no_user">there is no user.</string>
-    <string name="task_report_user">the user is %s.</string>
+    <string name="task_report_no_executor">there is no executor</string>
+    <string name="task_report_executor">the executor is %s</string>
     <string name="task_report_subject">TaskManager Task Report</string>
     <string name="send_report">Send task report via</string>
 
@@ -73,12 +74,10 @@
     <string name="title_activity_nav_drawer">NavDrawerActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">God</string>
-    <string name="nav_header_subtitle">admin</string>
+    <string name="nav_header_title">Admin</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_tasks">Tasks</string>
     <string name="menu_users">Users</string>
 
-    <string name="tasks_of_user_title">%1$s\'s tasks</string>
 </resources>

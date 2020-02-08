@@ -28,4 +28,9 @@
         android:label="@string/menu_tasks"
         tools:layout="@layout/fragment_item_list_with_adding_new" />
 
+    <activity
+        android:id="@+id/nav_sign_out"
+        android:name="com.sve.taskmanager.ui.SignInActivity"
+        tools:layout="@layout/activity_sign_in" />
+
 </navigation>

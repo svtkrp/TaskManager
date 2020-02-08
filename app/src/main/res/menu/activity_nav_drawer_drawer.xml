@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/nav_destinations"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_tasks"
             android:icon="@drawable/ic_menu_tasks_black"
@@ -12,6 +14,15 @@
             android:id="@+id/nav_users"
             android:icon="@drawable/ic_menu_users_black"
             android:title="@string/menu_users" />
+    </group>
+
+    <group
+        android:id="@+id/nav_operations"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_menu_sign_out_black"
+            android:title="@string/menu_sign_out" />
     </group>
 
 </menu>

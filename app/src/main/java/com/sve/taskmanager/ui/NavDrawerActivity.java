@@ -12,6 +12,8 @@ import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 
 import com.sve.taskmanager.R;
 
@@ -33,6 +35,10 @@ public class NavDrawerActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView headerTitleTextView = headerView.findViewById(R.id.nav_header_title_text_view);
+        headerTitleTextView.setText("AdMiN");
     }
 
     @Override

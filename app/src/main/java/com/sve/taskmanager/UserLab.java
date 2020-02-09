@@ -117,6 +117,25 @@ public class UserLab {
         }
     }
 
+    public User getUser(String username) {
+        if (username == null) return null;
+        UserCursorWrapper cursor = queryUsers(
+                UserTable.Cols.NAME + " = ?",
+                new String[] {username}
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getUser();
+        } finally {
+            cursor.close();
+        }
+    }
+
     public void addUser(User user) {
         if (user == null) return;
         ContentValues values = getContentValues(user);

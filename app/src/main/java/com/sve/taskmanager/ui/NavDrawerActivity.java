@@ -1,5 +1,7 @@
 package com.sve.taskmanager.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.navigation.NavController;
@@ -15,10 +17,17 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
+import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
 
 public class NavDrawerActivity extends AppCompatActivity {
+
     private AppBarConfiguration mAppBarConfiguration;
+
+    public static Intent newIntent (Context packageContext) {
+        Intent intent = new Intent(packageContext, NavDrawerActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +45,10 @@ public class NavDrawerActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        String username = CurrentUserPreferences.getStoredUsername(NavDrawerActivity.this);
         View headerView = navigationView.getHeaderView(0);
         TextView headerTitleTextView = headerView.findViewById(R.id.nav_header_title_text_view);
-        headerTitleTextView.setText("AdMiN");
+        headerTitleTextView.setText(username);
     }
 
     @Override

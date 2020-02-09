@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.navigation.Navigation;
 
+import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
 import com.sve.taskmanager.TaskLab;
 import com.sve.taskmanager.User;
@@ -32,6 +33,8 @@ public class UserListFragment extends Fragment {
     private static final String DIALOG_USER = "DialogUser";
     private static final int REQUEST_USER = 0;
 
+    private String mCurrentUsername;
+
     private RecyclerView mUserRecyclerView;
     private UserAdapter mAdapter;
 
@@ -41,6 +44,8 @@ public class UserListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        mCurrentUsername = CurrentUserPreferences.getStoredUsername(getActivity());
     }
 
     @Override
@@ -73,6 +78,12 @@ public class UserListFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_user_list, menu);
+
+        MenuItem newUserItem = menu.findItem(R.id.new_user);
+        if (!mCurrentUsername.equals(UserLab.ADMIN_NAME)) {
+            newUserItem.setEnabled(false);
+            newUserItem.setVisible(false);
+        }
     }
 
     @Override
@@ -136,7 +147,6 @@ public class UserListFragment extends Fragment {
                 UserLab.get(getActivity()).addUser(user);
                 updateUI();
             }
-
         }
     }
 
@@ -180,6 +190,11 @@ public class UserListFragment extends Fragment {
                 mDeleteUserButton.setVisibility(View.INVISIBLE);
                 mTaskCountAsExecutorTextView.setVisibility(View.GONE);
             } else {
+                if (!((mCurrentUsername.equals(UserLab.ADMIN_NAME))
+                        ||(mCurrentUsername.equals(mUser.getName())))) {
+                    mDeleteUserButton.setClickable(false);
+                    mDeleteUserButton.setVisibility(View.INVISIBLE);
+                }
                 int taskCountAsExecutor = TaskLab.get(getActivity()).getTaskCountOfExecutor(mUser);
                 String taskCountAsExecutorText = getString(R.string.task_count_as_executor_text,
                         getResources().getQuantityString(R.plurals.task_count_plural,

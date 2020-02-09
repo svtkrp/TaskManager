@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
 import com.sve.taskmanager.Task;
 import com.sve.taskmanager.TaskLab;
@@ -54,7 +55,11 @@ public class TaskFragment extends Fragment {
 
     private static final int[] MINUTES = {0, 8*60, 12*60, 15*60, 17*60};
 
+    private String mCurrentUsername;
+
     private Task mTask;
+
+    private String mTaskCustomerName;
 
     private EditText mTitleField;
 
@@ -106,8 +111,13 @@ public class TaskFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mCurrentUsername = CurrentUserPreferences.getStoredUsername(getActivity());
+
         UUID taskId = (UUID) getArguments().getSerializable(ARG_TASK_ID);
         mTask = TaskLab.get(getActivity()).getTask(taskId);
+        mTaskCustomerName = UserLab.get(getActivity())
+                .getUser(UUID.fromString(mTask.getCustomer())).getName();
 
         setHasOptionsMenu(true);
     }
@@ -274,6 +284,18 @@ public class TaskFragment extends Fragment {
             }
         });
 
+        if (!mCurrentUsername.equals(UserLab.ADMIN_NAME)) {
+            mCustomerSpinner.setEnabled(false);
+            if (!mCurrentUsername.equals(mTaskCustomerName)) {
+                mTitleField.setEnabled(false);
+                mDateSpinner.setEnabled(false);
+                mTimeSpinner.setEnabled(false);
+                mSolvedCheckBox.setEnabled(false);
+                mExecutorSpinner.setEnabled(false);
+                mDeleteExecutorButton.setEnabled(false);
+            }
+        }
+
         return view;
     }
 
@@ -320,6 +342,13 @@ public class TaskFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_task, menu);
+
+        MenuItem deleteTaskItem = menu.findItem(R.id.delete_task);
+        if (!((mCurrentUsername.equals(UserLab.ADMIN_NAME))
+                ||(mCurrentUsername.equals(mTaskCustomerName)))) {
+            deleteTaskItem.setEnabled(false);
+            deleteTaskItem.setVisible(false);
+        }
     }
 
     @Override

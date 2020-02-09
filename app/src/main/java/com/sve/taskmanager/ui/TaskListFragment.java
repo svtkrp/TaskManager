@@ -85,8 +85,7 @@ public class TaskListFragment extends Fragment {
     }
 
     private void addAndOpenNewTask() {
-        Task task = new Task();
-        TaskLab.get(getActivity()).addTask(task);
+        Task task = TaskLab.get(getActivity()).createAndAddEmptyTask();
         Intent intent = TaskPagerActivity.newIntent(getActivity(), task.getId());
         startActivity(intent);
     }

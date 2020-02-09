@@ -31,6 +31,14 @@ public class TaskLab {
         mDatabase = new TaskBaseHelper(mContext).getWritableDatabase();
     }
 
+    public Task createAndAddEmptyTask() {
+        Task task = new Task();
+        task.setCustomer(UserLab.get(mContext)
+                .getUser(CurrentUserPreferences.getStoredUsername(mContext)).getId().toString());
+        addTask(task);
+        return task;
+    }
+
     public int getTaskCount() {
         TaskCursorWrapper cursor = queryTasks(null, null);
         return cursor.getCount();

@@ -20,7 +20,6 @@ public class Task {
     public Task(UUID id) {
         mId = id;
         mDate = new Date();
-        mCustomer = UserLab.ADMIN_ID.toString();
     }
 
     public UUID getId() {

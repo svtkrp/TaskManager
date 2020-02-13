@@ -12,7 +12,7 @@
         android:layout_marginTop="@dimen/default_margin"
         android:layout_marginLeft="@dimen/default_margin"
         android:layout_marginBottom="@dimen/default_margin"
-        app:srcCompat="@mipmap/ic_launcher_round"
+        app:srcCompat="@drawable/ic_person_black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -30,7 +30,8 @@
         app:layout_constraintRight_toLeftOf="@+id/delete_user"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/customer_task_count"
-        tools:text="User Name" />
+        tools:text="User Name"
+        android:fontFamily="@font/montserrat" />
 
     <TextView
         android:id="@+id/customer_task_count"
@@ -43,7 +44,8 @@
         app:layout_constraintRight_toLeftOf="@+id/delete_user"
         app:layout_constraintTop_toBottomOf="@id/user_name"
         app:layout_constraintBottom_toTopOf="@id/executor_task_count"
-        tools:text="User's Task Count As Customer" />
+        tools:text="User's Task Count As Customer"
+        android:fontFamily="@font/montserrat" />
 
     <TextView
         android:id="@+id/executor_task_count"
@@ -56,7 +58,8 @@
         app:layout_constraintRight_toLeftOf="@+id/delete_user"
         app:layout_constraintTop_toBottomOf="@id/customer_task_count"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="User's Task Count As Executor" />
+        tools:text="User's Task Count As Executor"
+        android:fontFamily="@font/montserrat" />
 
     <ImageButton
         android:id="@+id/delete_user"

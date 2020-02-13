@@ -18,7 +18,8 @@
         app:layout_constraintRight_toLeftOf="@+id/task_solved"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/task_date"
-        tools:text="Task Title" />
+        tools:text="Task Title"
+        android:fontFamily="@font/montserrat" />
 
     <TextView
         android:id="@+id/task_date"
@@ -29,7 +30,8 @@
         app:layout_constraintRight_toLeftOf="@+id/task_solved"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/task_title"
-        tools:text="Task Date" />
+        tools:text="Task Date"
+        android:fontFamily="@font/montserrat" />
 
     <ImageView
         android:id="@+id/task_solved"

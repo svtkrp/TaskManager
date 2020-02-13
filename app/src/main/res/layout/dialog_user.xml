@@ -9,13 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:hint="@string/new_user_login_hint" />
+        android:hint="@string/new_user_login_hint"
+        android:fontFamily="@font/montserrat"/>
 
     <EditText
         android:id="@+id/dialog_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:hint="@string/new_user_name_hint" />
+        android:hint="@string/new_user_name_hint"
+        android:fontFamily="@font/montserrat"/>
 
 </LinearLayout>

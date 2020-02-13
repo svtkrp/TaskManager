@@ -19,7 +19,8 @@
         android:layout_height="wrap_content"
         android:hint="@string/task_title_hint"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/task_title_label" />
+        app:layout_constraintTop_toBottomOf="@id/task_title_label"
+        android:fontFamily="@font/montserrat"/>
 
     <TextView
         android:id="@+id/task_details_label"
@@ -52,7 +53,8 @@
         android:layout_height="wrap_content"
         android:text="@string/task_solved_label"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/task_date_date" />
+        app:layout_constraintTop_toBottomOf="@id/task_date_date"
+        android:fontFamily="@font/montserrat"/>
 
     <Spinner
         android:id="@+id/task_customer"
@@ -91,6 +93,8 @@
         android:text="@string/send_report_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/task_executor" />
+        app:layout_constraintTop_toBottomOf="@id/task_executor"
+        style="@style/MyBorderlessColoredButton"
+        android:theme="@style/AccentButton" />
 
 </android.support.constraint.ConstraintLayout>

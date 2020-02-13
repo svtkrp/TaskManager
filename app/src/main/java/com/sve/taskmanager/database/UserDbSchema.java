@@ -5,7 +5,7 @@ public class UserDbSchema {
         public static final String NAME = "users";
 
         public static final class Cols {
-            public static final String UUID = "uuid";
+            public static final String LOGIN = "login";
             public static final String NAME = "name";
         }
     }

@@ -33,8 +33,7 @@ public class TaskLab {
 
     public Task createAndAddEmptyTask() {
         Task task = new Task();
-        task.setCustomer(UserLab.get(mContext)
-                .getUser(CurrentUserPreferences.getStoredUsername(mContext)).getId().toString());
+        task.setCustomer(CurrentUserPreferences.getStoredUserLogin(mContext));
         addTask(task);
         return task;
     }
@@ -94,13 +93,13 @@ public class TaskLab {
 
     public void replaceCustomerWithAdmin(User customer) {
         if (customer == null) return;
-        String customerId = customer.getId().toString();
+        String customerLogin = customer.getLogin();
         ContentValues values;
         Task task;
 
         TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.CUSTOMER + " = ?",
-                new String[] {customerId}
+                new String[] {customerLogin}
         );
 
         try {
@@ -124,13 +123,13 @@ public class TaskLab {
 
     public void replaceExecutorWithNull(User executor) {
         if (executor == null) return;
-        String executorId = executor.getId().toString();
+        String executorLogin = executor.getLogin();
         ContentValues values;
         Task task;
 
         TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.EXECUTOR + " = ?",
-                new String[] {executorId}
+                new String[] {executorLogin}
         );
 
         try {
@@ -154,40 +153,40 @@ public class TaskLab {
 
     public int getTaskCountOfCustomer(User customer) {
         //fixme if (customer == null) return
-        String customerId = customer.getId().toString();
+        String customerLogin = customer.getLogin();
         TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.CUSTOMER + " = ?",
-                new String[] {customerId}
+                new String[] {customerLogin}
         );
         return cursor.getCount();
     }
 
     public List<Task> getTasksOfCustomer(User customer) {
         //fixme if (customer == null) return
-        String customerId = customer.getId().toString();
+        String customerLogin = customer.getLogin();
         TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.CUSTOMER + " = ?",
-                new String[] {customerId}
+                new String[] {customerLogin}
         );
         return getTaskList(cursor);
     }
 
     public int getTaskCountOfExecutor(User executor) {
         //fixme if (executor == null) return
-        String executorId = executor.getId().toString();
+        String executorLogin = executor.getLogin();
         TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.EXECUTOR + " = ?",
-                new String[] {executorId}
+                new String[] {executorLogin}
         );
         return cursor.getCount();
     }
 
     public List<Task> getTasksOfExecutor(User executor) {
         //fixme if (executor == null) return
-        String executorId = executor.getId().toString();
+        String executorLogin = executor.getLogin();
         TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.EXECUTOR + " = ?",
-                new String[] {executorId}
+                new String[] {executorLogin}
         );
         return getTaskList(cursor);
     }
@@ -222,7 +221,7 @@ public class TaskLab {
         values.put(TaskTable.Cols.TITLE, task.getTitle());
         values.put(TaskTable.Cols.DATE, task.getDate().getTime());
         values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
-        values.put(TaskTable.Cols.CUSTOMER, UserLab.ADMIN_ID.toString());
+        values.put(TaskTable.Cols.CUSTOMER, UserLab.ADMIN_LOGIN);
         values.put(TaskTable.Cols.EXECUTOR, task.getExecutor());
         return values;
     }

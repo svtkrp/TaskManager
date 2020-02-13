@@ -6,20 +6,15 @@ import android.database.CursorWrapper;
 import com.sve.taskmanager.User;
 import com.sve.taskmanager.database.UserDbSchema.UserTable;
 
-import java.util.UUID;
-
 public class UserCursorWrapper extends CursorWrapper {
     public UserCursorWrapper(Cursor cursor) {
         super(cursor);
     }
 
     public User getUser() {
-        String uuidString = getString(getColumnIndex(UserTable.Cols.UUID));
+        String login = getString(getColumnIndex(UserTable.Cols.LOGIN));
         String name = getString(getColumnIndex(UserTable.Cols.NAME));
 
-        User user = new User(UUID.fromString(uuidString));
-        user.setName(name);
-
-        return user;
+        return new User(login, name);
     }
 }

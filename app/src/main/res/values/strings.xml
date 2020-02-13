@@ -42,6 +42,7 @@
 
     <string name="add_new_user_text">Add new user...</string>
     <string name="add_new_user_button">Add new user</string>
+    <string name="new_user_login_hint">Enter new user\'s login...</string>
     <string name="new_user_name_hint">Enter new user\'s name...</string>
     <string name="delete_user_text">Delete user</string>
     <string name="tasks_of_user_title">%1$s\'s tasks</string>
@@ -75,13 +76,14 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Username</string>
+    <string name="nav_header_subtitle">login</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_tasks">Tasks</string>
     <string name="menu_users">Users</string>
     <string name="menu_sign_out">Sign out</string>
 
-    <string name="sign_in_username_hint">Enter username...</string>
+    <string name="sign_in_login_hint">Enter login...</string>
     <string name="sign_in_button">Sign in</string>
     <string name="sign_in_incorrect_toast">Incorrect!</string>
 

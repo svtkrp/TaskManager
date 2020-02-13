@@ -11,13 +11,12 @@ import com.sve.taskmanager.database.UserDbSchema.UserTable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class UserLab {
 
-    public static final UUID ADMIN_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    public static final String ADMIN_LOGIN = "admin";
     public static final String ADMIN_NAME = "Admin";
-    public static final User ADMIN = new User(ADMIN_ID, ADMIN_NAME);
+    public static final User ADMIN = new User(ADMIN_LOGIN, ADMIN_NAME);
 
     private static UserLab sUserLab;
 
@@ -39,12 +38,12 @@ public class UserLab {
 
     private void checkAndAddAdmin() {
         UserCursorWrapper cursor = queryUsers(
-                UserTable.Cols.UUID + " = ?",
-                new String[] {ADMIN_ID.toString()}
+                UserTable.Cols.LOGIN + " = ?",
+                new String[] {ADMIN_LOGIN}
         );
         try {
             if (cursor.getCount() == 0) {
-                addUser(new User(ADMIN_ID, ADMIN_NAME));
+                addUser(new User(ADMIN_LOGIN, ADMIN_NAME));
             //} else if (cursor.getCount() > 1) {
                 //fixme: exception / deleting
             }
@@ -86,7 +85,7 @@ public class UserLab {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 user = cursor.getUser();
-                if (!user.equals(ADMIN)) {
+                if (!user.getLogin().equals(ADMIN_LOGIN)) {
                     users.add(user);
                 }
                 cursor.moveToNext();
@@ -98,30 +97,11 @@ public class UserLab {
         return users;
     }
 
-    public User getUser(UUID id) {
-        if (id == null) return null;
+    public User getUser(String login) {
+        if (login == null) return null;
         UserCursorWrapper cursor = queryUsers(
-                UserTable.Cols.UUID + " = ?",
-                new String[] {id.toString()}
-        );
-
-        try {
-            if (cursor.getCount() == 0) {
-                return null;
-            }
-
-            cursor.moveToFirst();
-            return cursor.getUser();
-        } finally {
-            cursor.close();
-        }
-    }
-
-    public User getUser(String username) {
-        if (username == null) return null;
-        UserCursorWrapper cursor = queryUsers(
-                UserTable.Cols.NAME + " = ?",
-                new String[] {username}
+                UserTable.Cols.LOGIN + " = ?",
+                new String[] {login}
         );
 
         try {
@@ -148,20 +128,20 @@ public class UserLab {
         taskLab.replaceCustomerWithAdmin(user);
         taskLab.replaceExecutorWithNull(user);
 
-        String uuidString = user.getId().toString();
+        String login = user.getLogin();
         mDatabase.delete(UserTable.NAME,
-                UserTable.Cols.UUID + " = ?",
-                new String[] {uuidString}
+                UserTable.Cols.LOGIN + " = ?",
+                new String[] {login}
         );
     }
 
     public void updateUser(User user) {
         if (user == null) return;
-        String uuidString = user.getId().toString();
+        String login = user.getLogin();
         ContentValues values = getContentValues(user);
         mDatabase.update(UserTable.NAME, values,
-                UserTable.Cols.UUID + " = ?",
-                new String[] {uuidString}
+                UserTable.Cols.LOGIN + " = ?",
+                new String[] {login}
         );
     }
 
@@ -180,7 +160,7 @@ public class UserLab {
 
     private static ContentValues getContentValues(User user) {
         ContentValues values = new ContentValues();
-        values.put(UserTable.Cols.UUID, user.getId().toString());
+        values.put(UserTable.Cols.LOGIN, user.getLogin());
         values.put(UserTable.Cols.NAME, user.getName());
         return values;
     }

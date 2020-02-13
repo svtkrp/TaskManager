@@ -17,7 +17,7 @@ public class UserBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + UserDbSchema.UserTable.NAME + "(" +
                 " _id integer primary key autoincrement, " +
-                UserDbSchema.UserTable.Cols.UUID + ", " +
+                UserDbSchema.UserTable.Cols.LOGIN + ", " +
                 UserDbSchema.UserTable.Cols.NAME +
                 ")"
         );

@@ -14,8 +14,11 @@ import android.widget.EditText;
 import com.sve.taskmanager.R;
 
 public class UserCreaterFragment extends DialogFragment {
+
+    public static final String EXTRA_USER_LOGIN = "user_login";
     public static final String EXTRA_USER_NAME = "user_name";
 
+    private EditText mLoginField;
     private EditText mNameField;
 
     public static UserCreaterFragment newInstance() {
@@ -27,6 +30,7 @@ public class UserCreaterFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_user, null);
 
+        mLoginField = view.findViewById(R.id.dialog_user_login);
         mNameField = view.findViewById(R.id.dialog_user_name);
 
         return new AlertDialog.Builder(getActivity())
@@ -35,20 +39,22 @@ public class UserCreaterFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String str = mNameField.getText().toString();
-                        sendResult(Activity.RESULT_OK, str);
+                        String login = mLoginField.getText().toString();
+                        String name = mNameField.getText().toString();
+                        sendResult(Activity.RESULT_OK, login, name);
                     }
                 })
                 .create();
     }
 
-    private void sendResult(int resultCode, String str) {
+    private void sendResult(int resultCode, String login, String name) {
         if (getTargetFragment() == null) {
             return;
         }
 
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_USER_NAME, str);
+        intent.putExtra(EXTRA_USER_LOGIN, login);
+        intent.putExtra(EXTRA_USER_NAME, name);
 
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
     }

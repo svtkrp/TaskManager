@@ -33,7 +33,7 @@ public class UserListFragment extends Fragment {
     private static final String DIALOG_USER = "DialogUser";
     private static final int REQUEST_USER = 0;
 
-    private String mCurrentUsername;
+    private String mCurrentUserLogin;
 
     private RecyclerView mUserRecyclerView;
     private UserAdapter mAdapter;
@@ -45,7 +45,7 @@ public class UserListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        mCurrentUsername = CurrentUserPreferences.getStoredUsername(getActivity());
+        mCurrentUserLogin = CurrentUserPreferences.getStoredUserLogin(getActivity());
     }
 
     @Override
@@ -80,7 +80,7 @@ public class UserListFragment extends Fragment {
         inflater.inflate(R.menu.fragment_user_list, menu);
 
         MenuItem newUserItem = menu.findItem(R.id.new_user);
-        if (!mCurrentUsername.equals(UserLab.ADMIN_NAME)) {
+        if (!mCurrentUserLogin.equals(UserLab.ADMIN_LOGIN)) {
             newUserItem.setEnabled(false);
             newUserItem.setVisible(false);
         }
@@ -105,8 +105,14 @@ public class UserListFragment extends Fragment {
     }
 
     private void deleteUser(User user) {
+        String login = user.getLogin();
+
         UserLab.get(getActivity()).deleteUser(user, TaskLab.get(getActivity()));
         updateUI();
+
+        if (mCurrentUserLogin.equals(login)) {
+            getActivity().finish();
+        }
     }
 
     private void updateSubtitle() {
@@ -140,10 +146,10 @@ public class UserListFragment extends Fragment {
         }
 
         if (requestCode == REQUEST_USER) {
+            String login = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_LOGIN);
             String name = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_NAME);
-            if ((name != null)&&(!name.equals(""))) {
-                User user = new User();
-                user.setName(name);
+            if ((login != null)&&(!login.equals(""))&&(name != null)&&(!name.equals(""))) {
+                User user = new User(login, name);
                 UserLab.get(getActivity()).addUser(user);
                 updateUI();
             }
@@ -177,7 +183,7 @@ public class UserListFragment extends Fragment {
 
         public void bind(User user) {
             mUser = user;
-            mNameTextView.setText(mUser.getName());
+            mNameTextView.setText(String.format("%1$s (%2$s)", mUser.getName(), mUser.getLogin()));
 
             int taskCountAsCustomer = TaskLab.get(getActivity()).getTaskCountOfCustomer(mUser);
             String taskCountAsCustomerText = getString(R.string.task_count_as_customer_text,
@@ -185,13 +191,13 @@ public class UserListFragment extends Fragment {
                             taskCountAsCustomer, taskCountAsCustomer));
             mTaskCountAsCustomerTextView.setText(taskCountAsCustomerText);
 
-            if (mUser.equals(UserLab.ADMIN)) {
+            if (mUser.getLogin().equals(UserLab.ADMIN_LOGIN)) {
                 mDeleteUserButton.setClickable(false);
                 mDeleteUserButton.setVisibility(View.INVISIBLE);
                 mTaskCountAsExecutorTextView.setVisibility(View.GONE);
             } else {
-                if (!((mCurrentUsername.equals(UserLab.ADMIN_NAME))
-                        ||(mCurrentUsername.equals(mUser.getName())))) {
+                if (!((mCurrentUserLogin.equals(UserLab.ADMIN_LOGIN))
+                        ||(mCurrentUserLogin.equals(mUser.getLogin())))) {
                     mDeleteUserButton.setClickable(false);
                     mDeleteUserButton.setVisibility(View.INVISIBLE);
                 }
@@ -205,7 +211,7 @@ public class UserListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Bundle bundle = TaskListOfUserFragment.newBundle(mUser.getId());
+            Bundle bundle = TaskListOfUserFragment.newBundle(mUser.getLogin());
             Navigation.findNavController(view)
                     .navigate(R.id.action_nav_users_to_nav_tasks_of_user, bundle);
         }

@@ -5,17 +5,17 @@ import android.preference.PreferenceManager;
 
 public class CurrentUserPreferences {
 
-    private static final String PREF_USER_NAME = "user_name";
+    private static final String PREF_USER_LOGIN = "user_login";
 
-    public static String getStoredUsername(Context context) {
+    public static String getStoredUserLogin(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREF_USER_NAME, null);
+                .getString(PREF_USER_LOGIN, null);
     }
 
-    public static void setStoredUsername(Context context, String username) {
+    public static void setStoredUserLogin(Context context, String login) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putString(PREF_USER_NAME, username)
+                .putString(PREF_USER_LOGIN, login)
                 .apply();
     }
 }

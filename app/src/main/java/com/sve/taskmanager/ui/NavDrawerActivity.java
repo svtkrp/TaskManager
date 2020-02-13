@@ -19,14 +19,14 @@ import android.widget.TextView;
 
 import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
+import com.sve.taskmanager.UserLab;
 
 public class NavDrawerActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
     public static Intent newIntent (Context packageContext) {
-        Intent intent = new Intent(packageContext, NavDrawerActivity.class);
-        return intent;
+        return new Intent(packageContext, NavDrawerActivity.class);
     }
 
     @Override
@@ -45,10 +45,13 @@ public class NavDrawerActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        String username = CurrentUserPreferences.getStoredUsername(NavDrawerActivity.this);
+        String login = CurrentUserPreferences.getStoredUserLogin(NavDrawerActivity.this);
+        String username = UserLab.get(NavDrawerActivity.this).getUser(login).getName();
         View headerView = navigationView.getHeaderView(0);
         TextView headerTitleTextView = headerView.findViewById(R.id.nav_header_title_text_view);
         headerTitleTextView.setText(username);
+        TextView headerSubtitleTextView = headerView.findViewById(R.id.nav_header_subtitle_text_view);
+        headerSubtitleTextView.setText(login);
     }
 
     @Override

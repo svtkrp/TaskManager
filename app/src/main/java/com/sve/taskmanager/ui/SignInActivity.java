@@ -16,24 +16,24 @@ import com.sve.taskmanager.SignIn;
 
 public class SignInActivity extends AppCompatActivity {
 
-    private EditText mUserNameEditText;
+    private EditText mLoginEditText;
     private Button mSignInButton;
-    private String mUsername;
+    private String mLogin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        mUserNameEditText = findViewById(R.id.user_name_edit_text);
-        mUserNameEditText.addTextChangedListener(new TextWatcher() {
+        mLoginEditText = findViewById(R.id.user_name_edit_text);
+        mLoginEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mUsername = s.toString();
+                mLogin = s.toString();
             }
 
             @Override
@@ -45,8 +45,8 @@ public class SignInActivity extends AppCompatActivity {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SignIn.isCorrect(SignInActivity.this, mUsername)) {
-                    CurrentUserPreferences.setStoredUsername(SignInActivity.this, mUsername);
+                if (SignIn.isCorrect(SignInActivity.this, mLogin)) {
+                    CurrentUserPreferences.setStoredUserLogin(SignInActivity.this, mLogin);
                     Intent intent = NavDrawerActivity.newIntent(SignInActivity.this);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

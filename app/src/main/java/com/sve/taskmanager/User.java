@@ -1,26 +1,27 @@
 package com.sve.taskmanager;
 
-import java.util.UUID;
-
 public class User {
-    private UUID mId;
+
+    private String mLogin;
     private String mName;
 
-    public User() {
-        this(UUID.randomUUID());
+    private User() {}
+
+    public User(String login) {
+        this(login, "Name");
     }
 
-    public User(UUID id) {
-        mId = id;
-    }
-
-    public User(UUID id, String name) {
-        this(id);
+    public User(String login, String name) {
+        mLogin = login;
         mName = name;
     }
 
-    public UUID getId() {
-        return mId;
+    public String getLogin() {
+        return mLogin;
+    }
+
+    public void setLogin(String login) {
+        mLogin = login;
     }
 
     public String getName() {
@@ -37,6 +38,6 @@ public class User {
         if (obj == this) return true;
         if (!(obj instanceof User)) return false;
         User user = (User) obj;
-        return mId.equals(user.mId);
+        return mLogin.equals(user.mLogin);
     }
 }

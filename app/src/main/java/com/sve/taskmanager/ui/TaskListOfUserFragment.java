@@ -13,17 +13,16 @@ import com.sve.taskmanager.User;
 import com.sve.taskmanager.UserLab;
 
 import java.util.List;
-import java.util.UUID;
 
 public class TaskListOfUserFragment extends TaskListFragment {
     public static final String TAG = "com.sve.taskmanager.ui.TaskListOfUserFragment";
-    private static final String ARG_USER_ID = "user_id";
+    private static final String ARG_USER_LOGIN = "user_login";
 
     private User mUser;
 
-    public static Bundle newBundle(UUID userId) {
+    public static Bundle newBundle(String userLogin) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_USER_ID, userId);
+        args.putString(ARG_USER_LOGIN, userLogin);
         return args;
     }
 
@@ -32,8 +31,8 @@ public class TaskListOfUserFragment extends TaskListFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            UUID userId = (UUID) getArguments().getSerializable(ARG_USER_ID);
-            mUser = UserLab.get(getActivity()).getUser(userId);
+            String login = getArguments().getString(ARG_USER_LOGIN);
+            mUser = UserLab.get(getActivity()).getUser(login);
         }
     }
 

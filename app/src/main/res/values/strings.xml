@@ -44,6 +44,8 @@
     <string name="add_new_user_button">Add new user</string>
     <string name="new_user_login_hint">Enter new user\'s login...</string>
     <string name="new_user_name_hint">Enter new user\'s name...</string>
+    <string name="new_user_empty_fields_toast">Fill in login and name!</string>
+    <string name="login_exist_toast">This login already exist!</string>
     <string name="delete_user_text">Delete user</string>
     <string name="tasks_of_user_title">%1$s\'s tasks</string>
 
@@ -85,6 +87,6 @@
 
     <string name="sign_in_login_hint">Enter login...</string>
     <string name="sign_in_button">Sign in</string>
-    <string name="sign_in_incorrect_toast">Incorrect!</string>
+    <string name="sign_in_incorrect_toast">Incorrect credentials!</string>
 
 </resources>

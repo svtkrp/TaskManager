@@ -10,8 +10,10 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.sve.taskmanager.R;
+import com.sve.taskmanager.UserLab;
 
 public class UserCreaterFragment extends DialogFragment {
 
@@ -41,7 +43,16 @@ public class UserCreaterFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String login = mLoginField.getText().toString();
                         String name = mNameField.getText().toString();
-                        sendResult(Activity.RESULT_OK, login, name);
+
+                        if (login.equals("") || name.equals("")) {
+                            Toast.makeText(getContext(), R.string.new_user_empty_fields_toast,
+                                    Toast.LENGTH_SHORT).show();
+                        } else if (UserLab.get(getActivity()).getUser(login) != null) {
+                            Toast.makeText(getContext(), R.string.login_exist_toast,
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            sendResult(Activity.RESULT_OK, login, name);
+                        }
                     }
                 })
                 .create();

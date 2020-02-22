@@ -4,26 +4,32 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.sve.taskmanager.database.TaskDbSchema.TaskTable;
+import com.sve.taskmanager.database.TaskManagerDbSchema.TaskTable;
+import com.sve.taskmanager.database.TaskManagerDbSchema.UserTable;
 
-public class TaskBaseHelper extends SQLiteOpenHelper {
+public class TaskManagerBaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
-    private static final String DATABASE_NAME = "taskBase.db";
+    private static final String DATABASE_NAME = "TaskManager.db";
 
-    public TaskBaseHelper(Context context) {
+    public TaskManagerBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TaskTable.NAME + "(" +
-                " _id integer primary key autoincrement, " +
-                TaskTable.Cols.UUID + ", " +
+        db.execSQL("create table " + TaskTable.NAME + "( " +
+                TaskTable.Cols.ID + " integer primary key, " + // "integer" in sqlite = long
                 TaskTable.Cols.TITLE + ", " +
                 TaskTable.Cols.DATE + ", " +
                 TaskTable.Cols.SOLVED + ", " +
                 TaskTable.Cols.CUSTOMER + ", " +
                 TaskTable.Cols.EXECUTOR +
+                ")"
+        );
+
+        db.execSQL("create table " + UserTable.NAME + "( " +
+                UserTable.Cols.LOGIN + " text primary key, " +
+                UserTable.Cols.NAME +
                 ")"
         );
     }

@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 
 import com.sve.taskmanager.User;
-import com.sve.taskmanager.database.UserDbSchema.UserTable;
+import com.sve.taskmanager.database.TaskManagerDbSchema.UserTable;
 
 public class UserCursorWrapper extends CursorWrapper {
     public UserCursorWrapper(Cursor cursor) {

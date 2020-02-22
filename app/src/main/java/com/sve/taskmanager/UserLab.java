@@ -5,9 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.sve.taskmanager.database.UserBaseHelper;
+import com.sve.taskmanager.database.TaskManagerBaseHelper;
 import com.sve.taskmanager.database.UserCursorWrapper;
-import com.sve.taskmanager.database.UserDbSchema.UserTable;
+import com.sve.taskmanager.database.TaskManagerDbSchema.UserTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class UserLab {
 
     private UserLab(Context context) {
         mContext = context.getApplicationContext();
-        mDatabase = new UserBaseHelper(mContext).getWritableDatabase();
+        mDatabase = new TaskManagerBaseHelper(mContext).getWritableDatabase();
         checkAndAddAdmin();
     }
 
@@ -43,7 +43,7 @@ public class UserLab {
         );
         try {
             if (cursor.getCount() == 0) {
-                addUser(new User(ADMIN_LOGIN, ADMIN_NAME));
+                addUser(ADMIN);
             //} else if (cursor.getCount() > 1) {
                 //fixme: exception / deleting
             }

@@ -7,10 +7,6 @@ public class User {
 
     private User() {}
 
-    public User(String login) {
-        this(login, "Name");
-    }
-
     public User(String login, String name) {
         mLogin = login;
         mName = name;

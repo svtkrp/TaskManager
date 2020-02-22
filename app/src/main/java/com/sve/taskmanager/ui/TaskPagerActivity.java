@@ -16,7 +16,6 @@ import com.sve.taskmanager.Task;
 import com.sve.taskmanager.TaskLab;
 
 import java.util.List;
-import java.util.UUID;
 
 public class TaskPagerActivity extends AppCompatActivity {
     private static final String EXTRA_TASK_ID = "task_id";
@@ -27,7 +26,7 @@ public class TaskPagerActivity extends AppCompatActivity {
     private Button mFirstTaskButton;
     private Button mLastTaskButton;
 
-    public static Intent newIntent (Context packageContext, UUID taskId) {
+    public static Intent newIntent (Context packageContext, Long taskId) {
         Intent intent = new Intent(packageContext, TaskPagerActivity.class);
         intent.putExtra(EXTRA_TASK_ID, taskId);
         return intent;
@@ -38,7 +37,7 @@ public class TaskPagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_pager);
 
-        UUID taskId = (UUID) getIntent().getSerializableExtra(EXTRA_TASK_ID);
+        Long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
 
         mViewPager = findViewById(R.id.task_view_pager);
 

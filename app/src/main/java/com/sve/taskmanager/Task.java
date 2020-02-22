@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class Task {
 
-    private UUID mId;
+    private Long mId;
     private String mTitle;
     private Date mDate;
     private boolean mSolved;
@@ -14,15 +14,15 @@ public class Task {
     private String mExecutor;
 
     public Task() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
     }
 
-    public Task(UUID id) {
+    public Task(Long id) {
         mId = id;
         mDate = new Date();
     }
 
-    public UUID getId() {
+    public Long getId() {
         return mId;
     }
 

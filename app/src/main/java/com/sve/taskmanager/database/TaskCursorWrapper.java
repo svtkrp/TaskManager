@@ -4,10 +4,9 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 
 import com.sve.taskmanager.Task;
-import com.sve.taskmanager.database.TaskDbSchema.TaskTable;
+import com.sve.taskmanager.database.TaskManagerDbSchema.TaskTable;
 
 import java.util.Date;
-import java.util.UUID;
 
 public class TaskCursorWrapper extends CursorWrapper {
     public TaskCursorWrapper(Cursor cursor) {
@@ -15,14 +14,14 @@ public class TaskCursorWrapper extends CursorWrapper {
     }
 
     public Task getTask() {
-        String uuidString = getString(getColumnIndex(TaskTable.Cols.UUID));
+        long id = getLong(getColumnIndex(TaskTable.Cols.ID));
         String title = getString(getColumnIndex(TaskTable.Cols.TITLE));
         long date = getLong(getColumnIndex(TaskTable.Cols.DATE));
         int isSolved = getInt(getColumnIndex(TaskTable.Cols.SOLVED));
         String customer = getString(getColumnIndex(TaskTable.Cols.CUSTOMER));
         String executor = getString(getColumnIndex(TaskTable.Cols.EXECUTOR));
 
-        Task task = new Task(UUID.fromString(uuidString));
+        Task task = new Task(id);
         task.setTitle(title);
         task.setDate(new Date(date));
         task.setSolved(isSolved != 0);

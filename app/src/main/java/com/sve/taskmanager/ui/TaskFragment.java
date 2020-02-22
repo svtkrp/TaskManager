@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import static android.widget.CompoundButton.*;
 
@@ -92,9 +91,9 @@ public class TaskFragment extends Fragment {
 
     private Button mReportButton;
 
-    public static TaskFragment newInstance(UUID taskId) {
+    public static TaskFragment newInstance(Long taskId) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_TASK_ID, taskId);
+        args.putLong(ARG_TASK_ID, taskId);
 
         TaskFragment fragment = new TaskFragment();
         fragment.setArguments(args);
@@ -114,7 +113,7 @@ public class TaskFragment extends Fragment {
 
         mCurrentUserLogin = CurrentUserPreferences.getStoredUserLogin(getActivity());
 
-        UUID taskId = (UUID) getArguments().getSerializable(ARG_TASK_ID);
+        Long taskId = getArguments().getLong(ARG_TASK_ID);
         mTask = TaskLab.get(getActivity()).getTask(taskId);
         mTaskCustomerLogin = mTask.getCustomer();
 
@@ -312,8 +311,8 @@ public class TaskFragment extends Fragment {
             updateTimeView();
 
         } else if (requestCode == REQUEST_USER_CUSTOMER) {
-            String login = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_LOGIN);
-            String name = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_NAME);
+            String login = data.getStringExtra(UserCreaterFragment.EXTRA_USER_LOGIN);
+            String name = data.getStringExtra(UserCreaterFragment.EXTRA_USER_NAME);
             if ((login != null)&&(!login.equals(""))&&(name != null)&&(!name.equals(""))) {
                 User user = new User(login, name);
                 mUserLab.addUser(user);
@@ -323,8 +322,8 @@ public class TaskFragment extends Fragment {
             }
 
         } else if (requestCode == REQUEST_USER_EXECUTOR) {
-                String login = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_LOGIN);
-                String name = (String) data.getSerializableExtra(UserCreaterFragment.EXTRA_USER_NAME);
+                String login = data.getStringExtra(UserCreaterFragment.EXTRA_USER_LOGIN);
+                String name = data.getStringExtra(UserCreaterFragment.EXTRA_USER_NAME);
                 if ((login != null)&&(!login.equals(""))&&(name != null)&&(!name.equals(""))) {
                     User user = new User(login, name);
                     mUserLab.addUser(user);

@@ -46,10 +46,10 @@ public class NavDrawerActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         String login = CurrentUserPreferences.getStoredUserLogin(NavDrawerActivity.this);
-        String username = UserLab.get(NavDrawerActivity.this).getUser(login).getName();
+        String name = UserLab.get(NavDrawerActivity.this).getUser(login).getName();
         View headerView = navigationView.getHeaderView(0);
         TextView headerTitleTextView = headerView.findViewById(R.id.nav_header_title_text_view);
-        headerTitleTextView.setText(username);
+        headerTitleTextView.setText(name);
         TextView headerSubtitleTextView = headerView.findViewById(R.id.nav_header_subtitle_text_view);
         headerSubtitleTextView.setText(login);
     }

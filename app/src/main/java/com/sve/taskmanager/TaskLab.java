@@ -5,13 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.sve.taskmanager.database.TaskBaseHelper;
+import com.sve.taskmanager.database.TaskManagerBaseHelper;
 import com.sve.taskmanager.database.TaskCursorWrapper;
-import com.sve.taskmanager.database.TaskDbSchema.TaskTable;
+import com.sve.taskmanager.database.TaskManagerDbSchema.TaskTable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class TaskLab {
     private static TaskLab sTaskLab;
@@ -28,7 +27,7 @@ public class TaskLab {
 
     private TaskLab(Context context) {
         mContext = context.getApplicationContext();
-        mDatabase = new TaskBaseHelper(mContext).getWritableDatabase();
+        mDatabase = new TaskManagerBaseHelper(mContext).getWritableDatabase();
     }
 
     public Task createAndAddEmptyTask() {
@@ -48,10 +47,10 @@ public class TaskLab {
         return getTaskList(cursor);
     }
 
-    public Task getTask(UUID id) {
+    public Task getTask(Long id) {
         if (id == null) return null;
         TaskCursorWrapper cursor = queryTasks(
-                TaskTable.Cols.UUID + " = ?",
+                TaskTable.Cols.ID + " = ?",
                 new String[] {id.toString()}
         );
 
@@ -74,20 +73,20 @@ public class TaskLab {
 
     public void deleteTask(Task task) {
         if (task == null) return;
-        String uuidString = task.getId().toString();
+        String idString = task.getId().toString();
         mDatabase.delete(TaskTable.NAME,
-                TaskTable.Cols.UUID + " = ?",
-                new String[] {uuidString}
+                TaskTable.Cols.ID + " = ?",
+                new String[] {idString}
         );
     }
 
     public void updateTask(Task task) {
         if (task == null) return;
-        String uuidString = task.getId().toString();
+        String idString = task.getId().toString();
         ContentValues values = getContentValues(task);
         mDatabase.update(TaskTable.NAME, values,
-                TaskTable.Cols.UUID + " = ?",
-                new String[] {uuidString}
+                TaskTable.Cols.ID + " = ?",
+                new String[] {idString}
         );
     }
 
@@ -111,7 +110,7 @@ public class TaskLab {
                 task = cursor.getTask();
                 values = getContentValuesCustomerIsAdmin(task);
                 mDatabase.update(TaskTable.NAME, values,
-                        TaskTable.Cols.UUID + " = ?",
+                        TaskTable.Cols.ID + " = ?",
                         new String[] {task.getId().toString()}
                 );
                 cursor.moveToNext();
@@ -141,7 +140,7 @@ public class TaskLab {
                 task = cursor.getTask();
                 values = getContentValuesExecutorIsNull(task);
                 mDatabase.update(TaskTable.NAME, values,
-                        TaskTable.Cols.UUID + " = ?",
+                        TaskTable.Cols.ID + " = ?",
                         new String[] {task.getId().toString()}
                 );
                 cursor.moveToNext();
@@ -206,7 +205,7 @@ public class TaskLab {
 
     private static ContentValues getContentValues(Task task) {
         ContentValues values = new ContentValues();
-        values.put(TaskTable.Cols.UUID, task.getId().toString());
+        values.put(TaskTable.Cols.ID, task.getId());
         values.put(TaskTable.Cols.TITLE, task.getTitle());
         values.put(TaskTable.Cols.DATE, task.getDate().getTime());
         values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
@@ -217,7 +216,7 @@ public class TaskLab {
 
     private static ContentValues getContentValuesCustomerIsAdmin(Task task) {
         ContentValues values = new ContentValues();
-        values.put(TaskTable.Cols.UUID, task.getId().toString());
+        values.put(TaskTable.Cols.ID, task.getId());
         values.put(TaskTable.Cols.TITLE, task.getTitle());
         values.put(TaskTable.Cols.DATE, task.getDate().getTime());
         values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);
@@ -228,7 +227,7 @@ public class TaskLab {
 
     private static ContentValues getContentValuesExecutorIsNull(Task task) {
         ContentValues values = new ContentValues();
-        values.put(TaskTable.Cols.UUID, task.getId().toString());
+        values.put(TaskTable.Cols.ID, task.getId());
         values.put(TaskTable.Cols.TITLE, task.getTitle());
         values.put(TaskTable.Cols.DATE, task.getDate().getTime());
         values.put(TaskTable.Cols.SOLVED, task.isSolved() ? 1 : 0);

@@ -209,7 +209,7 @@ public class TaskFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (mCustomerItemWasClicked) {
-                    if (position == mCustomerNames.length - 1) {
+                    if (mCurrentUserIsAdmin && (position == mCustomerNames.length - 1)) {
                         FragmentManager fragmentManager = getFragmentManager();
                         UserCreaterFragment dialog = UserCreaterFragment.newInstance();
                         dialog.setTargetFragment(TaskFragment.this, REQUEST_USER_CUSTOMER);
@@ -235,7 +235,7 @@ public class TaskFragment extends Fragment {
                 if (mExecutorItemWasClicked) {
                     if (position == 0) {
                         mTask.setExecutor(null);
-                    } else if (position == mExecutorNames.length - 1) {
+                    } else if (mCurrentUserIsAdmin && (position == mExecutorNames.length - 1)) {
                         FragmentManager fragmentManager = getFragmentManager();
                         UserCreaterFragment dialog = UserCreaterFragment.newInstance();
                         dialog.setTargetFragment(TaskFragment.this, REQUEST_USER_EXECUTOR);
@@ -454,11 +454,19 @@ public class TaskFragment extends Fragment {
         mCustomers = mUserLab.getUsers();
         User customer = mUserLab.getUser(mTask.getCustomer());
 
-        mCustomerNames = new String[mCustomers.size() + 1];
+        if (mCurrentUserIsAdmin) {
+            mCustomerNames = new String[mCustomers.size() + 1];
+        } else {
+            mCustomerNames = new String[mCustomers.size()];
+        }
+
         for (int i = 0; i < mCustomers.size(); i++) {
             mCustomerNames[i] = mCustomers.get(i).getName();
         }
-        mCustomerNames[mCustomerNames.length - 1] = getString(R.string.add_new_user_text);
+
+        if (mCurrentUserIsAdmin) {
+            mCustomerNames[mCustomerNames.length - 1] = getString(R.string.add_new_user_text);
+        }
 
         mCustomerAdapter = new AdapterWithCustomItem(getActivity(), mCustomerNames);
         mCustomerSpinner.setAdapter(mCustomerAdapter);
@@ -478,12 +486,21 @@ public class TaskFragment extends Fragment {
             executor = mUserLab.getUser(mTask.getExecutor());
         }
 
-        mExecutorNames = new String[mExecutors.size() + 2];
+        if (mCurrentUserIsAdmin) {
+            mExecutorNames = new String[mExecutors.size() + 2];
+        } else {
+            mExecutorNames = new String[mExecutors.size() + 1];
+        }
+
         for (int i = 0; i < mExecutors.size(); i++) {
             mExecutorNames[i + 1] = mExecutors.get(i).getName();
         }
+
         mExecutorNames[0] = getString(R.string.no_task_executor_text);
-        mExecutorNames[mExecutorNames.length - 1] = getString(R.string.add_new_user_text);
+
+        if (mCurrentUserIsAdmin) {
+            mExecutorNames[mExecutorNames.length - 1] = getString(R.string.add_new_user_text);
+        }
 
         mExecutorAdapter = new AdapterWithCustomItem(getActivity(), mExecutorNames);
         mExecutorSpinner.setAdapter(mExecutorAdapter);

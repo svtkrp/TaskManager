@@ -47,11 +47,23 @@ public class UserCreaterFragment extends DialogFragment {
                         if (login.equals("") || name.equals("")) {
                             Toast.makeText(getContext(), R.string.new_user_empty_fields_toast,
                                     Toast.LENGTH_SHORT).show();
-                        } else if (UserLab.get(getActivity()).getUser(login) != null) {
-                            Toast.makeText(getContext(), R.string.login_exist_toast,
-                                    Toast.LENGTH_SHORT).show();
                         } else {
-                            sendResult(Activity.RESULT_OK, login, name);
+
+                            Toast.makeText(getActivity(),
+                                    "checkUser(example_company, login){GET(example_company, USER, login) - return boolean}",
+                                    Toast.LENGTH_LONG).show();
+
+                            if (UserLab.get(getActivity()).getUser(login) != null) {
+                                Toast.makeText(getContext(), R.string.login_exist_toast,
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+
+                                Toast.makeText(getActivity(),
+                                        "createUser(example_company, user){POST(example_company, USER, user) - return user}",
+                                        Toast.LENGTH_LONG).show();
+
+                                sendResult(Activity.RESULT_OK, login, name);
+                            }
                         }
                     }
                 })

@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
@@ -102,6 +103,10 @@ public class TaskFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
+        Toast.makeText(getActivity(),
+                "updateTask(example_company, task){PUT(example_company, TASK, task) - return task}",
+                Toast.LENGTH_LONG).show();
 
         TaskLab.get(getActivity()).updateTask(mTask);
     }
@@ -350,6 +355,11 @@ public class TaskFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_task:
+
+                Toast.makeText(getActivity(),
+                        "deleteTask(example_company, id){DELETE(example_company, TASK, id) - return void}",
+                        Toast.LENGTH_LONG).show();
+
                 TaskLab.get(getActivity()).deleteTask(mTask);
                 getActivity().finish();
                 return true;

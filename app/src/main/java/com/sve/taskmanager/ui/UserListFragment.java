@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.navigation.Navigation;
 
@@ -106,6 +107,10 @@ public class UserListFragment extends Fragment {
 
     private void deleteUser(User user) {
         String login = user.getLogin();
+
+        Toast.makeText(getActivity(),
+                "deleteUser(example_company, login){DELETE(example_company, USER, login) - return void}",
+                Toast.LENGTH_LONG).show();
 
         UserLab.get(getActivity()).deleteUser(user, TaskLab.get(getActivity()));
         updateUI();

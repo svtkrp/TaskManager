@@ -25,6 +25,10 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        Toast.makeText(SignInActivity.this,
+                "downloadDb(example_company){GET(example_company, tasks) - return List<Task>, GET(example_company, users) - return List<User>}",
+                Toast.LENGTH_LONG).show();
+
         mLoginEditText = findViewById(R.id.user_name_edit_text);
         mLoginEditText.addTextChangedListener(new TextWatcher() {
             @Override

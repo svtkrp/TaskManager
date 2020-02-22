@@ -148,11 +148,10 @@ public class UserListFragment extends Fragment {
         if (requestCode == REQUEST_USER) {
             String login = data.getStringExtra(UserCreaterFragment.EXTRA_USER_LOGIN);
             String name = data.getStringExtra(UserCreaterFragment.EXTRA_USER_NAME);
-            if ((login != null)&&(!login.equals(""))&&(name != null)&&(!name.equals(""))) {
-                User user = new User(login, name);
-                UserLab.get(getActivity()).addUser(user);
-                updateUI();
-            }
+
+            User user = new User(login, name);
+            UserLab.get(getActivity()).addUser(user);
+            updateUI();
         }
     }
 

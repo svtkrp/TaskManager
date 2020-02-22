@@ -54,11 +54,10 @@ public class TaskFragment extends Fragment {
 
     private static final int[] MINUTES = {0, 8*60, 12*60, 15*60, 17*60};
 
-    private String mCurrentUserLogin;
-
     private Task mTask;
 
-    private String mTaskCustomerLogin;
+    private boolean mCurrentUserIsCustomer;
+    private boolean mCurrentUserIsAdmin;
 
     private EditText mTitleField;
 
@@ -111,11 +110,14 @@ public class TaskFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCurrentUserLogin = CurrentUserPreferences.getStoredUserLogin(getActivity());
+        String currentUserLogin = CurrentUserPreferences.getStoredUserLogin(getActivity());
 
         Long taskId = getArguments().getLong(ARG_TASK_ID);
         mTask = TaskLab.get(getActivity()).getTask(taskId);
-        mTaskCustomerLogin = mTask.getCustomer();
+        String taskCustomerLogin = mTask.getCustomer();
+
+        mCurrentUserIsCustomer = currentUserLogin.equals(taskCustomerLogin);
+        mCurrentUserIsAdmin = currentUserLogin.equals(UserLab.ADMIN_LOGIN);
 
         setHasOptionsMenu(true);
     }
@@ -280,9 +282,9 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        if (!mCurrentUserLogin.equals(UserLab.ADMIN_LOGIN)) {
+        if (!mCurrentUserIsAdmin) {
             mCustomerSpinner.setEnabled(false);
-            if (!mCurrentUserLogin.equals(mTaskCustomerLogin)) {
+            if (!mCurrentUserIsCustomer) {
                 mTitleField.setEnabled(false);
                 mDateSpinner.setEnabled(false);
                 mTimeSpinner.setEnabled(false);
@@ -313,24 +315,22 @@ public class TaskFragment extends Fragment {
         } else if (requestCode == REQUEST_USER_CUSTOMER) {
             String login = data.getStringExtra(UserCreaterFragment.EXTRA_USER_LOGIN);
             String name = data.getStringExtra(UserCreaterFragment.EXTRA_USER_NAME);
-            if ((login != null)&&(!login.equals(""))&&(name != null)&&(!name.equals(""))) {
-                User user = new User(login, name);
-                mUserLab.addUser(user);
-                mTask.setCustomer(user.getLogin());
 
-                updateCustomerExecutorView();
-            }
+            User user = new User(login, name);
+            mUserLab.addUser(user);
+            mTask.setCustomer(user.getLogin());
+
+            updateCustomerExecutorView();
 
         } else if (requestCode == REQUEST_USER_EXECUTOR) {
                 String login = data.getStringExtra(UserCreaterFragment.EXTRA_USER_LOGIN);
                 String name = data.getStringExtra(UserCreaterFragment.EXTRA_USER_NAME);
-                if ((login != null)&&(!login.equals(""))&&(name != null)&&(!name.equals(""))) {
-                    User user = new User(login, name);
-                    mUserLab.addUser(user);
-                    mTask.setExecutor(user.getLogin());
 
-                    updateCustomerExecutorView();
-                }
+                User user = new User(login, name);
+                mUserLab.addUser(user);
+                mTask.setExecutor(user.getLogin());
+
+                updateCustomerExecutorView();
         }
     }
 
@@ -340,8 +340,7 @@ public class TaskFragment extends Fragment {
         inflater.inflate(R.menu.fragment_task, menu);
 
         MenuItem deleteTaskItem = menu.findItem(R.id.delete_task);
-        if (!((mCurrentUserLogin.equals(UserLab.ADMIN_LOGIN))
-                ||(mCurrentUserLogin.equals(mTaskCustomerLogin)))) {
+        if (!(mCurrentUserIsAdmin || mCurrentUserIsCustomer)) {
             deleteTaskItem.setEnabled(false);
             deleteTaskItem.setVisible(false);
         }
@@ -454,6 +453,7 @@ public class TaskFragment extends Fragment {
 
         mCustomers = mUserLab.getUsers();
         User customer = mUserLab.getUser(mTask.getCustomer());
+
         mCustomerNames = new String[mCustomers.size() + 1];
         for (int i = 0; i < mCustomers.size(); i++) {
             mCustomerNames[i] = mCustomers.get(i).getName();

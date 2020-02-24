@@ -12,8 +12,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sve.taskmanager.R;
-import com.sve.taskmanager.Task;
-import com.sve.taskmanager.TaskLab;
+import com.sve.taskmanager.model.Task;
+import com.sve.taskmanager.model.TaskLab;
 
 import java.util.List;
 

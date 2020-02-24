@@ -3,7 +3,7 @@ package com.sve.taskmanager.database;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.sve.taskmanager.User;
+import com.sve.taskmanager.model.User;
 import com.sve.taskmanager.database.TaskManagerDbSchema.UserTable;
 
 public class UserCursorWrapper extends CursorWrapper {

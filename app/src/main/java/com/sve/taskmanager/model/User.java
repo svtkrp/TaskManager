@@ -1,4 +1,4 @@
-package com.sve.taskmanager;
+package com.sve.taskmanager.model;
 
 public class User {
 

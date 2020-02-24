@@ -3,7 +3,7 @@ package com.sve.taskmanager.database;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.sve.taskmanager.Task;
+import com.sve.taskmanager.model.Task;
 import com.sve.taskmanager.database.TaskManagerDbSchema.TaskTable;
 
 import java.util.Date;

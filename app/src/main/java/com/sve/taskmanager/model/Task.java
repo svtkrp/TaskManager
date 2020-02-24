@@ -1,4 +1,4 @@
-package com.sve.taskmanager;
+package com.sve.taskmanager.model;
 
 import java.util.Date;
 import java.util.UUID;

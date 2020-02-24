@@ -28,10 +28,10 @@ import android.widget.Toast;
 
 import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
-import com.sve.taskmanager.Task;
-import com.sve.taskmanager.TaskLab;
-import com.sve.taskmanager.User;
-import com.sve.taskmanager.UserLab;
+import com.sve.taskmanager.model.Task;
+import com.sve.taskmanager.model.TaskLab;
+import com.sve.taskmanager.model.User;
+import com.sve.taskmanager.model.UserLab;
 
 import java.util.ArrayList;
 import java.util.Calendar;

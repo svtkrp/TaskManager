@@ -1,10 +1,11 @@
-package com.sve.taskmanager;
+package com.sve.taskmanager.model;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.database.TaskManagerBaseHelper;
 import com.sve.taskmanager.database.TaskCursorWrapper;
 import com.sve.taskmanager.database.TaskManagerDbSchema.TaskTable;

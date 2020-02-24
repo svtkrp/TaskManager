@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
-import com.sve.taskmanager.UserLab;
+import com.sve.taskmanager.model.UserLab;
 
 public class NavDrawerActivity extends AppCompatActivity {
 

@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sve.taskmanager.R;
-import com.sve.taskmanager.Task;
-import com.sve.taskmanager.TaskLab;
+import com.sve.taskmanager.model.Task;
+import com.sve.taskmanager.model.TaskLab;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

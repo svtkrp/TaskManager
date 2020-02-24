@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.sve.taskmanager.R;
-import com.sve.taskmanager.UserLab;
+import com.sve.taskmanager.model.UserLab;
 
 public class UserCreaterFragment extends DialogFragment {
 

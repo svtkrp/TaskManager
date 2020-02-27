@@ -17,6 +17,8 @@ import com.sve.taskmanager.internet.DownloadTasksController;
 import com.sve.taskmanager.internet.DownloadUsersController;
 import com.sve.taskmanager.model.Task;
 import com.sve.taskmanager.model.TaskLab;
+import com.sve.taskmanager.model.User;
+import com.sve.taskmanager.model.UserLab;
 
 import java.util.List;
 
@@ -31,18 +33,12 @@ public class SignInActivity extends AppCompatActivity {
     private String mLogin;
 
     private boolean mTasksWereReceived = false;
-    private boolean mUsersWereReceived = true;
+    private boolean mUsersWereReceived = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-
-        /*Toast.makeText(SignInActivity.this,
-                "downloadDb(example_company){GET(example_company, tasks) - return List<Task>, GET(example_company, users) - return List<User>}",
-                Toast.LENGTH_LONG).show();*/
-
-
 
         mLoginEditText = findViewById(R.id.user_name_edit_text);
         mLoginEditText.addTextChangedListener(new TextWatcher() {
@@ -85,7 +81,7 @@ public class SignInActivity extends AppCompatActivity {
                     List<Task> tasksList = response.body();
                     TaskLab.get(SignInActivity.this).addAll(tasksList);
                     mTasksWereReceived = true;
-                    allowSignIn();
+                    tryAllowSignIn();
                 } else {
                     Toast.makeText(SignInActivity.this, "error", Toast.LENGTH_LONG).show();
                 }
@@ -97,10 +93,27 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        new DownloadUsersController().start(SignInActivity.this);
+        new DownloadUsersController().start(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.isSuccessful()) {
+                    List<User> usersList = response.body();
+                    UserLab.get(SignInActivity.this).addAll(usersList);
+                    mUsersWereReceived = true;
+                    tryAllowSignIn();
+                } else {
+                    Toast.makeText(SignInActivity.this, "error", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(SignInActivity.this, "failed", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
-    private void allowSignIn() {
+    private void tryAllowSignIn() {
         if (mTasksWereReceived && mUsersWereReceived) {
             Toast.makeText(SignInActivity.this, "tasks & users were received", Toast.LENGTH_LONG).show();
             mSignInButton.setEnabled(true);

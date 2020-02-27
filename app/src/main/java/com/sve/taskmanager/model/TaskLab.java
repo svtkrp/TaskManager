@@ -78,6 +78,10 @@ public class TaskLab {
         mDatabase.insert(TaskTable.NAME, null, values);
     }
 
+    public void deleteAll() {
+        mDatabase.delete(TaskTable.NAME, null, null);
+    }
+
     public void deleteTask(Task task) {
         if (task == null) return;
         String idString = task.getId().toString();

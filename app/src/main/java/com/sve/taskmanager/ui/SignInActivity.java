@@ -79,6 +79,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onResponse(Call<List<Task>> call, Response<List<Task>> response) {
                 if (response.isSuccessful()) {
                     List<Task> tasksList = response.body();
+                    TaskLab.get(SignInActivity.this).deleteAll();
                     TaskLab.get(SignInActivity.this).addAll(tasksList);
                     mTasksWereReceived = true;
                     tryAllowSignIn();

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
+import com.sve.taskmanager.internet.DeleteTaskController;
 import com.sve.taskmanager.internet.UpdateTaskController;
 import com.sve.taskmanager.model.Task;
 import com.sve.taskmanager.model.TaskLab;
@@ -108,22 +109,24 @@ public class TaskFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        
-        new UpdateTaskController().start(mTask, new Callback<Task>() {
-            @Override
-            public void onResponse(Call<Task> call, Response<Task> response) {
-                if (response.isSuccessful() && response.body().equals(mTask)) {
-                    TaskLab.get(getActivity()).updateTask(mTask);
-                } else {
-                    Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Task> call, Throwable t) {
-                Toast.makeText(getActivity(), "failed", Toast.LENGTH_LONG).show();
-            }
-        });
+        if (TaskLab.get(getActivity()).getTask(mTask.getId()) != null) {
+            new UpdateTaskController().start(mTask, new Callback<Task>() {
+                @Override
+                public void onResponse(Call<Task> call, Response<Task> response) {
+                    if (response.isSuccessful() && response.body().equals(mTask)) {
+                        TaskLab.get(getActivity()).updateTask(mTask);
+                    } else {
+                        Toast.makeText(getActivity(), "error update " + mTask.getTitle(), Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Task> call, Throwable t) {
+                    Toast.makeText(getActivity(), "failed update " + mTask.getTitle(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     @Override
@@ -370,13 +373,22 @@ public class TaskFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_task:
+                new DeleteTaskController().start(mTask.getId(), new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            TaskLab.get(getActivity()).deleteTask(mTask);
+                            getActivity().finish();
+                        } else {
+                            Toast.makeText(getActivity(), "error delete " + mTask.getTitle(), Toast.LENGTH_LONG).show();
+                        }
+                    }
 
-                Toast.makeText(getActivity(),
-                        "deleteTask(example_company, id){DELETE(example_company, TASK, id) - return void}",
-                        Toast.LENGTH_LONG).show();
-
-                TaskLab.get(getActivity()).deleteTask(mTask);
-                getActivity().finish();
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(getActivity(), "failed delete " + mTask.getTitle(), Toast.LENGTH_LONG).show();
+                    }
+                });
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

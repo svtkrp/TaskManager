@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
+import com.sve.taskmanager.internet.UpdateTaskController;
 import com.sve.taskmanager.model.Task;
 import com.sve.taskmanager.model.TaskLab;
 import com.sve.taskmanager.model.User;
@@ -37,6 +38,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.widget.CompoundButton.*;
 
@@ -103,12 +108,22 @@ public class TaskFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        
+        new UpdateTaskController().start(mTask, new Callback<Task>() {
+            @Override
+            public void onResponse(Call<Task> call, Response<Task> response) {
+                if (response.isSuccessful() && response.body().equals(mTask)) {
+                    TaskLab.get(getActivity()).updateTask(mTask);
+                } else {
+                    Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
+                }
+            }
 
-        Toast.makeText(getActivity(),
-                "updateTask(example_company, task){PUT(example_company, TASK, task) - return task}",
-                Toast.LENGTH_LONG).show();
-
-        TaskLab.get(getActivity()).updateTask(mTask);
+            @Override
+            public void onFailure(Call<Task> call, Throwable t) {
+                Toast.makeText(getActivity(), "failed", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

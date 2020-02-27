@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
+import com.sve.taskmanager.internet.CreateTaskController;
 import com.sve.taskmanager.model.Task;
 import com.sve.taskmanager.model.TaskLab;
 
@@ -24,6 +26,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TaskListFragment extends Fragment {
 
@@ -87,13 +93,25 @@ public class TaskListFragment extends Fragment {
 
     private void addAndOpenNewTask() {
 
-        Toast.makeText(getActivity(),
-                "createTask(example_company){POST(example_company, TASK) - return new Task (id, date)}",
-                Toast.LENGTH_LONG).show();
+        new CreateTaskController().start(new Callback<Task>() {
+            @Override
+            public void onResponse(Call<Task> call, Response<Task> response) {
+                if (response.isSuccessful()) {
+                    Task task = response.body();
+                    task.setCustomer(CurrentUserPreferences.getStoredUserLogin(getActivity()));
+                    TaskLab.get(getActivity()).addTask(task);
+                    Intent intent = TaskPagerActivity.newIntent(getActivity(), task.getId());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
+                }
+            }
 
-        /*Task task = TaskLab.get(getActivity()).createAndAddEmptyTask();
-        Intent intent = TaskPagerActivity.newIntent(getActivity(), task.getId());
-        startActivity(intent);*/
+            @Override
+            public void onFailure(Call<Task> call, Throwable t) {
+                Toast.makeText(getActivity(), "failed", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     protected void updateSubtitle() {

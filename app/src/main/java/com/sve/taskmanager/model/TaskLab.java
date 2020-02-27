@@ -31,12 +31,12 @@ public class TaskLab {
         mDatabase = new TaskManagerBaseHelper(mContext).getWritableDatabase();
     }
 
-    public Task createAndAddEmptyTask() {
+    /*public Task createAndAddEmptyTask() {
         Task task = new Task();
         task.setCustomer(CurrentUserPreferences.getStoredUserLogin(mContext));
         addTask(task);
         return task;
-    }
+    }*/
 
     public int getTaskCount() {
         TaskCursorWrapper cursor = queryTasks(null, null);
@@ -63,6 +63,12 @@ public class TaskLab {
             return cursor.getTask();
         } finally {
             cursor.close();
+        }
+    }
+
+    public void addAll(List<Task> tasks) {
+        for (Task t : tasks) {
+            addTask(t);
         }
     }
 

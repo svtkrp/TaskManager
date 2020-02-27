@@ -1,69 +1,74 @@
 package com.sve.taskmanager.model;
 
 import java.util.Date;
-import java.util.UUID;
 
 public class Task {
 
-    private Long mId;
-    private String mTitle;
-    private Date mDate;
-    private boolean mSolved;
+    private Long id;
+    private String title;
+    private Date date;
+    private boolean solved;
 
-    private String mCustomer;
-    private String mExecutor;
+    private String customer;
+    private String executor;
 
-    public Task() {
+    /*public Task() {
         this(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
-    }
+    }*/
+
+    public Task() {}
 
     public Task(Long id) {
-        mId = id;
-        mDate = new Date();
+        this.id = id;
+        date = new Date();
     }
 
     public Long getId() {
-        return mId;
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        this.title = title;
     }
 
     public Date getDate() {
-        return mDate;
+        return date;
     }
 
     public void setDate(Date date) {
-        mDate = date;
+        this.date = date;
     }
 
     public boolean isSolved() {
-        return mSolved;
+        return solved;
     }
 
     public void setSolved(boolean solved) {
-        mSolved = solved;
+        this.solved = solved;
     }
 
     public String getCustomer() {
-        return mCustomer;
+        return customer;
     }
 
     public void setCustomer(String customer) {
-        mCustomer = customer;
+        this.customer = customer;
     }
 
     public String getExecutor() {
-        return mExecutor;
+        return executor;
     }
 
     public void setExecutor(String executor) {
-        mExecutor = executor;
+        this.executor = executor;
     }
 
     @Override
@@ -72,6 +77,6 @@ public class Task {
         if (obj == this) return true;
         if (!(obj instanceof Task)) return false;
         Task task = (Task) obj;
-        return mId.equals(task.mId);
+        return id.equals(task.id);
     }
 }

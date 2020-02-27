@@ -91,9 +91,9 @@ public class TaskListFragment extends Fragment {
                 "createTask(example_company){POST(example_company, TASK) - return new Task (id, date)}",
                 Toast.LENGTH_LONG).show();
 
-        Task task = TaskLab.get(getActivity()).createAndAddEmptyTask();
+        /*Task task = TaskLab.get(getActivity()).createAndAddEmptyTask();
         Intent intent = TaskPagerActivity.newIntent(getActivity(), task.getId());
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     protected void updateSubtitle() {

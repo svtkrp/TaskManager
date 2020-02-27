@@ -2,30 +2,30 @@ package com.sve.taskmanager.model;
 
 public class User {
 
-    private String mLogin;
-    private String mName;
+    private String login;
+    private String name;
 
     private User() {}
 
     public User(String login, String name) {
-        mLogin = login;
-        mName = name;
+        this.login = login;
+        this.name = name;
     }
 
     public String getLogin() {
-        return mLogin;
+        return login;
     }
 
     public void setLogin(String login) {
-        mLogin = login;
+        this.login = login;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public void setName(String name) {
-        mName = name;
+        this.name = name;
     }
 
     @Override
@@ -34,6 +34,6 @@ public class User {
         if (obj == this) return true;
         if (!(obj instanceof User)) return false;
         User user = (User) obj;
-        return mLogin.equals(user.mLogin);
+        return login.equals(user.login);
     }
 }

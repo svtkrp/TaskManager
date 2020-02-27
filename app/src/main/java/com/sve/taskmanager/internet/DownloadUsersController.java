@@ -1,8 +1,12 @@
 package com.sve.taskmanager.internet;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sve.taskmanager.model.User;
+import com.sve.taskmanager.model.UserLab;
 
 import java.util.List;
 
@@ -14,9 +18,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DownloadUsersController implements Callback<List<User>> {
 
-    static final String BASE_URL = Constants.BASE_URL;
+    private static final String BASE_URL = Constants.BASE_URL;
 
-    public void start() {
+    private Context mContext;
+
+    public void start(Context context) {
+        mContext = context;
+
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -36,14 +44,15 @@ public class DownloadUsersController implements Callback<List<User>> {
     public void onResponse(Call<List<User>> call, Response<List<User>> response) {
         if (response.isSuccessful()) {
             List<User> usersList = response.body();
-            //usersList.forEach(user -> System.out.println(user.getLogin()));
+            Toast.makeText(mContext, "users were received", Toast.LENGTH_LONG).show();
+            UserLab.get(mContext).addAll(usersList);
         } else {
-            //System.out.println(response.errorBody());
+            Toast.makeText(mContext, "error", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onFailure(Call<List<User>> call, Throwable t) {
-        t.printStackTrace();
+        Toast.makeText(mContext, "failed", Toast.LENGTH_LONG).show();
     }
 }

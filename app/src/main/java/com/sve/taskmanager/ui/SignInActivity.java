@@ -13,6 +13,16 @@ import android.widget.Toast;
 import com.sve.taskmanager.CurrentUserPreferences;
 import com.sve.taskmanager.R;
 import com.sve.taskmanager.SignIn;
+import com.sve.taskmanager.internet.DownloadTasksController;
+import com.sve.taskmanager.internet.DownloadUsersController;
+import com.sve.taskmanager.model.Task;
+import com.sve.taskmanager.model.TaskLab;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -20,14 +30,19 @@ public class SignInActivity extends AppCompatActivity {
     private Button mSignInButton;
     private String mLogin;
 
+    private boolean mTasksWereReceived = false;
+    private boolean mUsersWereReceived = true;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        Toast.makeText(SignInActivity.this,
+        /*Toast.makeText(SignInActivity.this,
                 "downloadDb(example_company){GET(example_company, tasks) - return List<Task>, GET(example_company, users) - return List<User>}",
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_LONG).show();*/
+
+
 
         mLoginEditText = findViewById(R.id.user_name_edit_text);
         mLoginEditText.addTextChangedListener(new TextWatcher() {
@@ -46,6 +61,7 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         mSignInButton = findViewById(R.id.sign_in_button);
+        mSignInButton.setEnabled(false);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,5 +77,33 @@ public class SignInActivity extends AppCompatActivity {
 
             }
         });
+
+        new DownloadTasksController().start(new Callback<List<Task>>() {
+            @Override
+            public void onResponse(Call<List<Task>> call, Response<List<Task>> response) {
+                if (response.isSuccessful()) {
+                    List<Task> tasksList = response.body();
+                    TaskLab.get(SignInActivity.this).addAll(tasksList);
+                    mTasksWereReceived = true;
+                    allowSignIn();
+                } else {
+                    Toast.makeText(SignInActivity.this, "error", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Task>> call, Throwable t) {
+                Toast.makeText(SignInActivity.this, "failed", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        new DownloadUsersController().start(SignInActivity.this);
+    }
+
+    private void allowSignIn() {
+        if (mTasksWereReceived && mUsersWereReceived) {
+            Toast.makeText(SignInActivity.this, "tasks & users were received", Toast.LENGTH_LONG).show();
+            mSignInButton.setEnabled(true);
+        }
     }
 }

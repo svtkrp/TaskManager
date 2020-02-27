@@ -116,6 +116,12 @@ public class UserLab {
         }
     }
 
+    public void addAll(List<User> users) {
+        for (User u : users) {
+            addUser(u);
+        }
+    }
+
     public void addUser(User user) {
         if (user == null) return;
         ContentValues values = getContentValues(user);
